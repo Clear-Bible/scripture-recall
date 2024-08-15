@@ -1,9 +1,9 @@
 # Syntereo
-*And Mary treasured these words in her heart..."
+*And Mary treasured these words in her heart..."*
 
 ## Run Locally
 
-* Install depedencies: `npm install`
+* Install dependencies: `npm install`
 * Start local server: `npm run dev`
 
 To use Voice Chat, you must provide a Hume AI API key and secret key.

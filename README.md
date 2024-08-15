@@ -1,5 +1,5 @@
 # Syntereo
-*And Mary treasured these words in her heart..."*
+*"And Mary treasured these words in her heart..."*
 
 ## Run Locally
 

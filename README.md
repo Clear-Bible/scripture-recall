@@ -1,8 +1,15 @@
-# React + Vite
+# Syntereo
+*And Mary treasured these words in her heart..."
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Run Locally
 
-Currently, two official plugins are available:
+* Install depedencies: `npm install`
+* Start local server: `npm run dev`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To use Voice Chat, you must provide a Hume AI API key and secret key.
+To do so, create a `.env.local` file with the following variables:
+
+VITE_HUME_API_KEY=<your API key>
+VITE_HUME_CLIENT_SECRET=<your secret key>
+
+**DO NOT CHECK `.env.local` file into git.**

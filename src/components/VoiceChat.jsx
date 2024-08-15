@@ -3,6 +3,7 @@ import Messages from "./Messages";
 import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { useRef } from "react";
+import {systemPrompt} from "@/data/prompts";
 
 export function VoiceChat({ accessToken }) {
   const timeout = useRef(null);
@@ -16,6 +17,9 @@ export function VoiceChat({ accessToken }) {
         debug={true}
         auth={{ type: "apiKey", value: import.meta.env.VITE_HUME_API_KEY }}
         // auth={{ type: "accessToken", value: accessToken }}
+        sessionSettings={{
+          systemPrompt:systemPrompt
+        }}
         onMessage={() => {
           if (timeout.current) {
             window.clearTimeout(timeout.current);

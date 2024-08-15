@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "@/Layout";
 import Home from "@/routes/Home";
 import Settings from "@/routes/Settings";
+import Chat from "@/routes/Chat";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "settings",
         element: <Settings />,
+      },
+      {
+        path: "chat",
+        element: <Chat />,
       },
     ],
   },

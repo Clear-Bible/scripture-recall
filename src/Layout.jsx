@@ -34,7 +34,7 @@ const NavLink = ({ to, children }) => {
 const BottomNavBar = () => {
   const tabs = [
     { id: "home", icon: Home, label: "Home", path: "/home" },
-    // { id: "profile", icon: User, label: "Profile", path: "/profile" },
+    { id: "Chat", icon: User, label: "Chat", path: "/chat" },
     // { id: "messages", icon: Mail, label: "Messages", path: "/messages" },
     { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
   ];

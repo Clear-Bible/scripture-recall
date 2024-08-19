@@ -8,8 +8,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "@/Layout";
 import Home from "@/routes/Home";
 import Memory from "@/routes/Memory";
-import Chat from "@/routes/Chat";
+import Practice from "@/routes/Practice";
 import Settings from "@/routes/Settings";
+
+import VoiceChat from "@/components/VoiceChat";
+import TextChat from "@/components/TextChat";
 
 const router = createBrowserRouter([
   {
@@ -24,17 +27,25 @@ const router = createBrowserRouter([
         path: "memory",
         element: <Memory />,
       },
-  {
-        path: "chat",
-        element: <Chat />,
+      {
+        path: "practice",
+        element: <Practice />,
       },
 
+      {
+        path: "practice/voice/:snippetId",
+        element: <VoiceChat />,
+      },
+      {
+        path: "practice/text/:snippetId",
+        element: <TextChat />,
+      },
 
       {
         path: "settings",
         element: <Settings />,
       },
-        ],
+    ],
   },
 ]);
 

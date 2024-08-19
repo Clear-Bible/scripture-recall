@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
   };
 
 function StatusBadge({status}) {
-console.info("BADGE", status)
+// console.info("BADGE", status)
 return (<Badge className={`${statusColors[status]}`}> &nbsp; </Badge>);
 
 }

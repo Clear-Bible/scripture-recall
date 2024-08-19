@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -31,8 +30,15 @@ import { Switch } from "@/components/ui/switch";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { getAllSnippets } from "@/db";
+import {
+  getAllSnippets,
+  saveSnippet,
+  getNextId,
+  deleteSnippet,
+  updateSnippet,
+} from "@/db";
 import Loader from "@/components/Loader";
+import StatusBadge from "@/components/StatusBadge";
 
 // const Memory = () => {
 //   return <h1>Memory</h1>;
@@ -45,9 +51,10 @@ const ScriptureSnippetManager = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [snippets, setSnippets] = useState([]);
   const [newSnippet, setNewSnippet] = useState({
+    id: "",
     reference: "",
     body: "",
-    status: "",
+    status: "1",
   });
   const [editingIndex, setEditingIndex] = useState(null);
   // const [statusFilter, setStatusFilter] = useState("all");
@@ -55,51 +62,36 @@ const ScriptureSnippetManager = () => {
   const [showAllPassages, setShowAllPassages] = useState(false);
   const [visiblePassages, setVisiblePassages] = useState({});
 
-  const statusColors = {
-    3: "bg-green-500",
-    2: "bg-yellow-500",
-    1: "bg-red-500",
+  const fetchSnippets = async () => {
+    try {
+      const data = await getAllSnippets();
+      setSnippets(data);
+      setIsLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchSnippets = async () => {
-      try {
-        const data = await getAllSnippets();
-        console.log("LOADED?", data);
-        setSnippets(data);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setIsLoading(false);
-      }
-    };
-
     fetchSnippets();
   }, []);
 
-  // const statusOrder = ["1", "2", "3"];
-
-  // const statusLabel = {
-  //   1: "Don't know it",
-  //   2: "Kind of know it",
-  //   3: "Know it!",
-  // };
-
-  const addSnippet = () => {
-    if (newSnippet.reference && newSnippet.body) {
-      const newId = Date.now().toString();
-      setSnippets([...snippets, { ...newSnippet, id: newId }]);
-      setNewSnippet({ reference: "", body: "", status: "don't know it" });
+  const addSnippet = async () => {
+    console.log("add", newSnippet);
+    if (newSnippet.reference && newSnippet.body && newSnippet.status) {
+      const newId = await getNextId();
+      newSnippet.id = newId;
+      await saveSnippet(newSnippet);
+      fetchSnippets();
+      setNewSnippet({ reference: "", body: "", status: "1" });
       setIsDialogOpen(false);
     }
   };
 
-  const deleteSnippet = (id) => {
-    setSnippets(snippets.filter((snippet) => snippet.id !== id));
-    setVisiblePassages((prev) => {
-      const { [id]: _, ...rest } = prev;
-      return rest;
-    });
+  const removeSnippet = async (id) => {
+    await deleteSnippet(id);
+    fetchSnippets();
   };
 
   const editSnippet = (snippet) => {
@@ -108,16 +100,12 @@ const ScriptureSnippetManager = () => {
     setIsDialogOpen(true);
   };
 
-  const updateSnippet = () => {
-    setSnippets(
-      snippets.map((snippet) =>
-        snippet.id === editingIndex
-          ? { ...newSnippet, id: snippet.id }
-          : snippet,
-      ),
-    );
+  const changeSnippet = async () => {
+    console.log("change", newSnippet);
+    await updateSnippet(newSnippet);
+    fetchSnippets();
     setEditingIndex(null);
-    setNewSnippet({ reference: "", body: "", status: "don't know it" });
+    setNewSnippet({ reference: "", body: "", status: "1" });
     setIsDialogOpen(false);
   };
 
@@ -134,9 +122,12 @@ const ScriptureSnippetManager = () => {
   // };
 
   const handleAddOrUpdateSnippet = () => {
+    console.log("handleAddOrUpdateSnippet");
     if (editingIndex !== null) {
-      updateSnippet();
+      console.log("change");
+      changeSnippet();
     } else {
+      console.log("add");
       addSnippet();
     }
   };
@@ -259,9 +250,7 @@ const ScriptureSnippetManager = () => {
                   <div className="flex justify-between mb-2">
                     <div>{snippet.reference}</div>
                     <div>
-                      <Badge className={`${statusColors[snippet.status]}`}>
-                        &nbsp;
-                      </Badge>
+                      <StatusBadge status={snippet.status} />
                     </div>
                   </div>
                 </CardTitle>
@@ -296,7 +285,7 @@ const ScriptureSnippetManager = () => {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => deleteSnippet(snippet.id)}
+                    onClick={() => removeSnippet(snippet.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

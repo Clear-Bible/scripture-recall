@@ -4,6 +4,7 @@ import Controls from "./Controls";
 import StartCall from "./StartCall";
 import { useRef, useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
+import {Speech} from "lucide-react";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -89,7 +90,26 @@ return (
           }, 200);
         }}
       >
-        <Messages ref={ref} />
+          <AnimatePresence>
+          <motion.div 
+            className="fixed inset-0 flex items-center justify-center"
+          initial="initial"
+          animate="enter"
+          exit="exit"
+          variants={{
+            initial: { opacity: 0 },
+            enter: { opacity: 1 },
+            exit: { opacity: 0 },
+          }}
+        >
+
+          <Speech className="size-36 opacity-50" 
+            strokeWidth={2}
+            stroke={"currentColor"}
+            />
+            </motion.div>
+            </AnimatePresence>
+        {/* <Messages ref={ref} /> */}
         <Controls />
         <StartCall />
       </VoiceProvider>

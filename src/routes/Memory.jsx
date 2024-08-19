@@ -216,9 +216,7 @@ const ScriptureSnippetManager = () => {
                   <div className="flex justify-between mb-2">
                     <div>{snippet.reference}</div>
                     <div>
-                      <Badge
-                        className={`${statusColors[snippet.status]} cursor-pointer transition-colors duration-200 hover:opacity-80`}
-                      >
+                      <Badge className={`${statusColors[snippet.status]}`}>
                         &nbsp;
                       </Badge>
                     </div>

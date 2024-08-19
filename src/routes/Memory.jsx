@@ -1,0 +1,320 @@
+import React, { useState, useMemo } from "react";
+import {
+  PlusCircle,
+  Trash2,
+  Edit2,
+  Filter,
+  Book,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+
+import Snippets from "@/data/snippets";
+
+// const Memory = () => {
+//   return <h1>Memory</h1>;
+// };
+
+// export default Memory;
+
+const ScriptureSnippetManager = () => {
+  const [snippets, setSnippets] = useState(Snippets);
+  const [newSnippet, setNewSnippet] = useState({
+    reference: "",
+    body: "",
+    status: "",
+  });
+  const [editingIndex, setEditingIndex] = useState(null);
+  // const [statusFilter, setStatusFilter] = useState("all");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showAllPassages, setShowAllPassages] = useState(false);
+  const [visiblePassages, setVisiblePassages] = useState({});
+
+  const statusColors = {
+    3: "bg-green-500",
+    2: "bg-yellow-500",
+    1: "bg-red-500",
+  };
+
+  // const statusOrder = ["1", "2", "3"];
+
+  // const statusLabel = {
+  //   1: "Don't know it",
+  //   2: "Kind of know it",
+  //   3: "Know it!",
+  // };
+
+  const addSnippet = () => {
+    if (newSnippet.reference && newSnippet.body) {
+      const newId = Date.now().toString();
+      setSnippets([...snippets, { ...newSnippet, id: newId }]);
+      setNewSnippet({ reference: "", body: "", status: "don't know it" });
+      setIsDialogOpen(false);
+    }
+  };
+
+  const deleteSnippet = (id) => {
+    setSnippets(snippets.filter((snippet) => snippet.id !== id));
+    setVisiblePassages((prev) => {
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const editSnippet = (snippet) => {
+    setEditingIndex(snippet.id);
+    setNewSnippet(snippet);
+    setIsDialogOpen(true);
+  };
+
+  const updateSnippet = () => {
+    setSnippets(
+      snippets.map((snippet) =>
+        snippet.id === editingIndex
+          ? { ...newSnippet, id: snippet.id }
+          : snippet,
+      ),
+    );
+    setEditingIndex(null);
+    setNewSnippet({ reference: "", body: "", status: "don't know it" });
+    setIsDialogOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    setNewSnippet({ ...newSnippet, [e.target.name]: e.target.value });
+  };
+
+  const handleStatusChange = (value) => {
+    setNewSnippet({ ...newSnippet, status: value });
+  };
+
+  // const handleFilterChange = (value) => {
+  //   setStatusFilter(value);
+  // };
+
+  const handleAddOrUpdateSnippet = () => {
+    if (editingIndex !== null) {
+      updateSnippet();
+    } else {
+      addSnippet();
+    }
+  };
+
+  // const cycleStatus = (snippetId) => {
+  //   setSnippets(
+  //     snippets.map((snippet) => {
+  //       if (snippet.id === snippetId) {
+  //         const currentIndex = statusOrder.indexOf(snippet.status);
+  //         const nextIndex = (currentIndex + 1) % statusOrder.length;
+  //         return { ...snippet, status: statusOrder[nextIndex] };
+  //       }
+  //       return snippet;
+  //     }),
+  //   );
+  // };
+
+  const togglePassageVisibility = (snippetId) => {
+    setVisiblePassages((prev) => ({
+      ...prev,
+      [snippetId]: !prev[snippetId],
+    }));
+  };
+
+  const toggleAllPassages = () => {
+    setShowAllPassages((prev) => !prev);
+    if (!showAllPassages) {
+      const allVisible = snippets.reduce((acc, snippet) => {
+        acc[snippet.id] = true;
+        return acc;
+      }, {});
+      setVisiblePassages(allVisible);
+    } else {
+      setVisiblePassages({});
+    }
+  };
+
+  // const filteredSnippets = useMemo(() => {
+  //   if (statusFilter === "all") {
+  //     return snippets;
+  //   }
+  //   return snippets.filter((snippet) => snippet.status === statusFilter);
+  // }, [snippets, statusFilter]);
+
+  const EmptyState = () => (
+    <div className="text-center py-10">
+      <Book className="mx-auto h-12 w-12 text-gray-400" />
+      <h3 className="mt-2 text-sm font-semibold text-gray-900">No snippets</h3>
+      <p className="mt-1 text-sm text-gray-500">
+        Get started by adding a new scripture snippet.
+      </p>
+      <div className="mt-6">
+        <Button onClick={() => setIsDialogOpen(true)}>
+          <PlusCircle className="mr-2 h-4 w-4" /> Add Snippet
+        </Button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="p-4 max-w-md mx-auto relative min-h-screen">
+      {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}
+
+      {/* <Card className="mb-4"> */}
+      {/*   <CardHeader> */}
+      {/*     <CardTitle className="text-lg flex items-center"> */}
+      {/*       <Filter className="mr-2" /> Filter Snippets */}
+      {/*     </CardTitle> */}
+      {/*   </CardHeader> */}
+      {/*   <CardContent> */}
+      {/*     <Select value={statusFilter} onValueChange={handleFilterChange}> */}
+      {/*       <SelectTrigger> */}
+      {/*         <SelectValue placeholder="Filter by status" /> */}
+      {/*       </SelectTrigger> */}
+      {/*       <SelectContent> */}
+      {/*         <SelectItem value="all">All</SelectItem> */}
+      {/*         <SelectItem value="know it">Know it</SelectItem> */}
+      {/*         <SelectItem value="kind of know it">Kind of know it</SelectItem> */}
+      {/*         <SelectItem value="don't know it">Don't know it</SelectItem> */}
+      {/*       </SelectContent> */}
+      {/*     </Select> */}
+      {/*   </CardContent> */}
+      {/* </Card> */}
+
+      {/* <div className="flex items-center justify-between mb-4"> */}
+      {/*   <span className="text-sm font-medium">Show All Passages</span> */}
+      {/*   <Switch checked={showAllPassages} onCheckedChange={toggleAllPassages} /> */}
+      {/* </div> */}
+
+      {snippets.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div className="space-y-4 mb-20">
+          {snippets.map((snippet) => (
+            <Card key={snippet.id}>
+              <CardHeader>
+                <CardTitle className="text-lg">
+                  <div className="flex justify-between mb-2">
+                    <div>{snippet.reference}</div>
+                    <div>
+                      <Badge
+                        className={`${statusColors[snippet.status]} cursor-pointer transition-colors duration-200 hover:opacity-80`}
+                      >
+                        &nbsp;
+                      </Badge>
+                    </div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-end items-center"></div>
+                {(showAllPassages || visiblePassages[snippet.id]) && (
+                  <pre className="whitespace-pre-wrap break-words font-sans text-sm mb-2">
+                    {snippet.body}
+                  </pre>
+                )}
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => togglePassageVisibility(snippet.id)}
+                  >
+                    {showAllPassages || visiblePassages[snippet.id] ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => editSnippet(snippet)}
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => deleteSnippet(snippet.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>
+              {editingIndex !== null ? "Edit Snippet" : "Add New Snippet"}
+            </DialogTitle>
+          </DialogHeader>
+          <Input
+            name="reference"
+            placeholder="Reference"
+            value={newSnippet.reference}
+            onChange={handleInputChange}
+            className="mb-2"
+          />
+          <Textarea
+            name="body"
+            placeholder="Scripture body"
+            value={newSnippet.body}
+            onChange={handleInputChange}
+            className="h-[200px] mb-2"
+          />
+          <Select value={newSnippet.status} onValueChange={handleStatusChange}>
+            <SelectTrigger className="mb-2">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="3">Know It!</SelectItem>
+              <SelectItem value="2">Kind of know it</SelectItem>
+              <SelectItem value="1">Don't know it</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={handleAddOrUpdateSnippet} className="w-full">
+            {editingIndex !== null ? "Update" : "Add"} Snippet
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      <Button
+        className="fixed bottom-20 right-4 rounded-full w-16 h-16 shadow-lg"
+        onClick={() => {
+          setEditingIndex(null);
+          setNewSnippet({ reference: "", body: "", status: "don't know it" });
+          setIsDialogOpen(true);
+        }}
+      >
+        <PlusCircle className="h-6 w-6" />
+      </Button>
+    </div>
+  );
+};
+
+export default ScriptureSnippetManager;

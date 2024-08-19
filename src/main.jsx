@@ -7,8 +7,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Layout from "@/Layout";
 import Home from "@/routes/Home";
-import Settings from "@/routes/Settings";
+import Memory from "@/routes/Memory";
 import Chat from "@/routes/Chat";
+import Settings from "@/routes/Settings";
 
 const router = createBrowserRouter([
   {
@@ -20,14 +21,20 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "settings",
-        element: <Settings />,
+        path: "memory",
+        element: <Memory />,
       },
-      {
+  {
         path: "chat",
         element: <Chat />,
       },
-    ],
+
+
+      {
+        path: "settings",
+        element: <Settings />,
+      },
+        ],
   },
 ]);
 

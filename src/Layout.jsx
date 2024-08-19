@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import React from "react";
-import { Home, User, Mail, Settings } from "lucide-react";
+import { Home, User, Book, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,8 @@ const NavLink = ({ to, children }) => {
 const BottomNavBar = () => {
   const tabs = [
     { id: "home", icon: Home, label: "Home", path: "/home" },
-    { id: "Chat", icon: User, label: "Chat", path: "/chat" },
+    { id: "memory", icon: Book, label: "Memory", path: "/memory" },
+    { id: "chat", icon: User, label: "Chat", path: "/chat" },
     // { id: "messages", icon: Mail, label: "Messages", path: "/messages" },
     { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
   ];

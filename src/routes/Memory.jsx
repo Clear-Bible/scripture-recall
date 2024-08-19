@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   PlusCircle,
   Trash2,
@@ -29,7 +29,10 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 
-import Snippets from "@/data/snippets";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { getAllSnippets } from "@/db";
+import Loader from "@/components/Loader";
 
 // const Memory = () => {
 //   return <h1>Memory</h1>;
@@ -38,7 +41,9 @@ import Snippets from "@/data/snippets";
 // export default Memory;
 
 const ScriptureSnippetManager = () => {
-  const [snippets, setSnippets] = useState(Snippets);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [snippets, setSnippets] = useState([]);
   const [newSnippet, setNewSnippet] = useState({
     reference: "",
     body: "",
@@ -55,6 +60,22 @@ const ScriptureSnippetManager = () => {
     2: "bg-yellow-500",
     1: "bg-red-500",
   };
+
+  useEffect(() => {
+    const fetchSnippets = async () => {
+      try {
+        const data = await getAllSnippets();
+        console.log("LOADED?", data);
+        setSnippets(data);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchSnippets();
+  }, []);
 
   // const statusOrder = ["1", "2", "3"];
 
@@ -174,6 +195,28 @@ const ScriptureSnippetManager = () => {
       </div>
     </div>
   );
+
+  if (isLoading) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          className={
+            "fixed inset-0 p-4 flex items-center justify-center bg-background"
+          }
+          initial="initial"
+          animate="enter"
+          exit="exit"
+          variants={{
+            initial: { opacity: 0 },
+            enter: { opacity: 1 },
+            exit: { opacity: 0 },
+          }}
+        >
+          <Loader />
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   return (
     <div className="p-4 max-w-md mx-auto relative min-h-screen">

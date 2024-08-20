@@ -3,6 +3,8 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { Home, Brain, Book, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeProvider } from "@/ThemeProvider";
+import ModeToggle from "@/components/ModeToggle";
 
 const NavLink = ({ to, children, isVertical }) => {
   const location = useLocation();
@@ -14,7 +16,9 @@ const NavLink = ({ to, children, isVertical }) => {
         variant="ghost"
         className={cn(
           "w-full flex items-center justify-center",
-          isVertical ? "flex-row h-12" : "flex-col h-16",
+          isVertical
+            ? "flex-row h-12 justify-start rounded-none p-6"
+            : "flex-col h-16",
           isActive && "bg-muted",
         )}
       >
@@ -37,37 +41,54 @@ const NavBar = ({ isVertical }) => {
       className={cn(
         "bg-background",
         isVertical
-          ? "flex-col border-r h-full"
-          : "flex flex-row border-t w-full",
+          ? "flex flex-col border-r h-full justify-between"
+          : "flex-0 flex-row border-t w-full justify-center flex-grow",
       )}
     >
-      {tabs.map((tab) => (
-        <NavLink key={tab.id} to={tab.path} isVertical={isVertical}>
-          <tab.icon className={cn("h-5 w-5", isVertical ? "mr-2" : "mb-1")} />
-          <span className={cn("text-xs", isVertical ? "" : "mt-1")}>
-            {tab.label}
-          </span>
-        </NavLink>
-      ))}
+      <div
+        className={cn(
+          "flex",
+          "justify-center",
+          isVertical ? "flex-col" : "flex-row",
+        )}
+      >
+        {tabs.map((tab) => (
+          <NavLink key={tab.id} to={tab.path} isVertical={isVertical}>
+            <tab.icon className={cn("h-5 w-5", isVertical ? "mr-2" : "mb-1")} />
+            <span className={cn("text-xs", isVertical ? "" : "mt-1")}>
+              {tab.label}
+            </span>
+          </NavLink>
+        ))}
+      </div>
+      <div>
+        {isVertical && (
+          <div className="mt-auto border-t w-full py-4 flex justify-center">
+            <ModeToggle />
+          </div>
+        )}
+      </div>
     </nav>
   );
 };
 
 const Layout = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen">
-      <div className="hidden md:flex md:max-w-32 md:flex-shrink-0">
-        <NavBar isVertical={true} />
-      </div>
-      <div className="flex-grow overflow-auto">
-        <div className="w-full max-w-4xl mx-auto px-4 py-8 md:px-6 lg:px-8">
-          <Outlet />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <div className="flex flex-col md:flex-row h-screen">
+        <div className="hidden md:flex md:max-w-32 md:flex-shrink-0">
+          <NavBar isVertical={true} />
+        </div>
+        <div className="flex-grow overflow-auto">
+          <div className="w-full max-w-4xl mx-auto px-4 py-8 md:px-6 lg:px-8">
+            <Outlet />
+          </div>
+        </div>
+        <div className="md:hidden">
+          <NavBar isVertical={false} />
         </div>
       </div>
-      <div className="md:hidden">
-        <NavBar isVertical={false} />
-      </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

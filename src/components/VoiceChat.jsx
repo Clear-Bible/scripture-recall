@@ -1,12 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import { VoiceProvider, useVoice } from "@humeai/voice-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import Messages from "@/components/voice/Messages";
 import Controls from "@/components/voice/Controls";
 import StartCall from "@/components/voice/StartCall";
-import { useParams } from "react-router-dom";
-import { Speech } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Speech, CircleChevronLeft } from "lucide-react";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -39,6 +40,8 @@ export function VoiceChat({ accessToken }) {
   const [isLoading, setIsLoading] = useState(null);
   const [snippet, setSnippet] = useState(null);
 
+  const navigate = useNavigate();
+
   const [speaker, setSpeaker] = useState(null);
 
   console.info("VOICE CHAT: ", snippetId, snippet);
@@ -67,11 +70,23 @@ export function VoiceChat({ accessToken }) {
       <div
         className={"flex flex-col justify-between items-center w-full h-full"}
       >
-        <div className="px-4 w-full">
+        <div className="w-full">
           <Card key={snippet.id}>
             <CardHeader>
               <CardTitle className="text-md">
                 <div className="flex justify-between items-center mb-2">
+                  <Button
+                    className="m-0 p-0"
+                    variant="ghost"
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  >
+                    <CircleChevronLeft
+                      strokeWidth={2}
+                      stroke={"currentColor"}
+                    />
+                  </Button>
                   <div>{snippet.reference}</div>
                   <div>
                     <StatusBadge status={snippet.status} />

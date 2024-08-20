@@ -1,5 +1,5 @@
 import { useVoice } from "@humeai/voice-react";
-import { Phone } from "lucide-react";
+import { Speech } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -43,13 +43,13 @@ export default function StartCall() {
                 }}
               >
                 <span>
-                  <Phone
+                  <Speech
                     className={"size-4 opacity-50"}
                     strokeWidth={2}
                     stroke={"currentColor"}
                   />
                 </span>
-                <span>Start Call</span>
+                <span>Begin Conversation</span>
               </Button>
             </motion.div>
           </AnimatePresence>

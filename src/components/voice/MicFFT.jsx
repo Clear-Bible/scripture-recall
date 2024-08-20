@@ -4,7 +4,7 @@ import { AutoSizer } from "react-virtualized";
 
 export default function MicFFT({ fft, className }) {
   return (
-    <div className={"relative size-full"}>
+    <div className={"relative"}>
       <AutoSizer>
         {({ width, height }) => (
           <motion.svg

@@ -25,7 +25,7 @@ export default function Controls() {
   return (
     <div
       className={cn(
-        "w-full p-4 flex items-center justify-center",
+        "p-4 flex items-center justify-center",
         "bg-gradient-to-t from-card via-card/90 to-card/0",
       )}
     >
@@ -83,7 +83,7 @@ export default function Controls() {
                   stroke={"currentColor"}
                 />
               </span>
-              <span>End Conversation</span>
+              <span>End</span>
             </Button>
           </motion.div>
         ) : null}

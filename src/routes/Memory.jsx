@@ -191,9 +191,7 @@ const ScriptureSnippetManager = () => {
     return (
       <AnimatePresence>
         <motion.div
-          className={
-            "fixed inset-0 p-4 flex items-center justify-center bg-background"
-          }
+          className={"fixed inset-0 p-4 flex items-center justify-center"}
           initial="initial"
           animate="enter"
           exit="exit"
@@ -210,7 +208,7 @@ const ScriptureSnippetManager = () => {
   }
 
   return (
-    <div className="w-full justify-self-center align-self-center">
+    <div className="w-full">
       {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}
 
       {/* <Card className="mb-4"> */}

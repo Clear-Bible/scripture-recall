@@ -1,15 +1,14 @@
-import {useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { getSnippetById } from "@/db";
-import {createPrompt} from "@/data/prompts";
+import { createPrompt } from "@/data/prompts";
 
 function TextChat() {
-  const {snippetId} = useParams();
+  const { snippetId } = useParams();
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
   const [snippet, setSnippet] = useState(null);
-
 
   useEffect(() => {
     const fetchSnippet = async () => {
@@ -26,14 +25,11 @@ function TextChat() {
     fetchSnippet();
   }, []);
 
-
- if (isLoading) {
+  if (isLoading) {
     return (
       <AnimatePresence>
         <motion.div
-          className={
-            "fixed inset-0 p-4 flex items-center justify-center bg-background"
-          }
+          className={"fixed inset-0 p-4 flex items-center justify-center"}
           initial="initial"
           animate="enter"
           exit="exit"
@@ -50,20 +46,19 @@ function TextChat() {
   }
 
   if (!isLoading && snippet) {
-return <>
-    <p>Text Chat is not yet implemented.</p>
-    <p>You selected:</p>
-    <br />
-    <p>{JSON.stringify(snippet)}</p>
-    <br />
-    <p>The prompt would be: </p>
-    <br />
-    <p>{createPrompt(snippet)}</p>
-
-  </>;
-
+    return (
+      <>
+        <p>Text Chat is not yet implemented.</p>
+        <p>You selected:</p>
+        <br />
+        <p>{JSON.stringify(snippet)}</p>
+        <br />
+        <p>The prompt would be: </p>
+        <br />
+        <p>{createPrompt(snippet)}</p>
+      </>
+    );
   }
 }
-
 
 export default TextChat;

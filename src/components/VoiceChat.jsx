@@ -44,9 +44,7 @@ export function VoiceChat({ accessToken }) {
     return (
       <AnimatePresence>
         <motion.div
-          className={
-            "fixed inset-0 p-4 flex items-center justify-center bg-background"
-          }
+          className={"fixed inset-0 p-4 flex items-center justify-center"}
           initial="initial"
           animate="enter"
           exit="exit"

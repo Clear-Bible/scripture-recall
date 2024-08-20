@@ -80,7 +80,7 @@ const Layout = () => {
           <NavBar isVertical={true} />
         </div>
         <div className="flex-grow overflow-auto">
-          <div className="w-full max-w-4xl mx-auto px-4 py-8 md:px-6 lg:px-8">
+          <div className="w-full h-full max-w-4xl mx-auto px-4 py-4 md:px-6 lg:px-8">
             <Outlet />
           </div>
         </div>

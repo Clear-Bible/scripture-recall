@@ -28,8 +28,6 @@ import {
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 
-import { AnimatePresence, motion } from "framer-motion";
-
 import {
   getAllSnippets,
   saveSnippet,
@@ -188,23 +186,7 @@ const ScriptureSnippetManager = () => {
   );
 
   if (isLoading) {
-    return (
-      <AnimatePresence>
-        <motion.div
-          className={"fixed inset-0 p-4 flex items-center justify-center"}
-          initial="initial"
-          animate="enter"
-          exit="exit"
-          variants={{
-            initial: { opacity: 0 },
-            enter: { opacity: 1 },
-            exit: { opacity: 0 },
-          }}
-        >
-          <Loader />
-        </motion.div>
-      </AnimatePresence>
-    );
+    return <Loader />;
   }
 
   return (

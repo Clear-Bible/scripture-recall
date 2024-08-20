@@ -46,23 +46,7 @@ const Practice = () => {
   };
 
   if (isLoading) {
-    return (
-      <AnimatePresence>
-        <motion.div
-          className={"fixed inset-0 p-4 flex items-center justify-center"}
-          initial="initial"
-          animate="enter"
-          exit="exit"
-          variants={{
-            initial: { opacity: 0 },
-            enter: { opacity: 1 },
-            exit: { opacity: 0 },
-          }}
-        >
-          <Loader />
-        </motion.div>
-      </AnimatePresence>
-    );
+    return <Loader />;
   }
 
   return (

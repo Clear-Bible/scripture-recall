@@ -59,31 +59,15 @@ export function VoiceChat({ accessToken }) {
   }, []);
 
   if (isLoading) {
-    return (
-      <AnimatePresence>
-        <motion.div
-          className={"fixed inset-0 p-4 flex items-center justify-center"}
-          initial="initial"
-          animate="enter"
-          exit="exit"
-          variants={{
-            initial: { opacity: 0 },
-            enter: { opacity: 1 },
-            exit: { opacity: 0 },
-          }}
-        >
-          <Loader />
-        </motion.div>
-      </AnimatePresence>
-    );
+    return <Loader />;
   }
 
   if (snippet) {
     return (
       <div
-        className={"relative grow flex flex-col mx-auto w-full overflow-hidden"}
+        className={"flex flex-col justify-between items-center w-full h-full"}
       >
-        <div className="p-4">
+        <div className="px-4 w-full">
           <Card key={snippet.id}>
             <CardHeader>
               <CardTitle className="text-md">
@@ -131,7 +115,7 @@ export function VoiceChat({ accessToken }) {
         >
           <AnimatePresence>
             <motion.div
-              className="fixed inset-0 flex items-center justify-center"
+              className="flex flex-col items-center justify-between"
               initial="initial"
               animate="enter"
               exit="exit"
@@ -151,8 +135,10 @@ export function VoiceChat({ accessToken }) {
             </motion.div>
           </AnimatePresence>
           {/* <Messages ref={ref} /> */}
-          <Controls />
-          <StartCall />
+          <div>
+            <Controls />
+            <StartCall />
+          </div>
         </VoiceProvider>
       </div>
     );

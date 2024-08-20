@@ -11,7 +11,7 @@ export default function StartCall() {
     <AnimatePresence>
       {status.value !== "connected" ? (
         <motion.div
-          className={"fixed inset-0 p-4 flex items-end justify-center"}
+          className={"w-full flex flex-col items-center justify-center"}
           initial="initial"
           animate="enter"
           exit="exit"
@@ -30,7 +30,7 @@ export default function StartCall() {
               }}
             >
               <Button
-                className={"z-50 flex items-center gap-1.5"}
+                className={"flex items-center gap-1.5 -z-50"}
                 onClick={() => {
                   connect()
                     .then(() => {})

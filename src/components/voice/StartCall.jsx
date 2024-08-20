@@ -7,15 +7,11 @@ import { Button } from "@/components/ui/button";
 export default function StartCall() {
   const { status, connect } = useVoice();
 
-  // console.log("STATUS", status);
-
   return (
     <AnimatePresence>
       {status.value !== "connected" ? (
         <motion.div
-          className={
-            "fixed inset-0 p-4 flex items-center justify-center bg-background"
-          }
+          className={"fixed inset-0 p-4 flex items-end justify-center"}
           initial="initial"
           animate="enter"
           exit="exit"

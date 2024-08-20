@@ -1,10 +1,10 @@
-import { VoiceProvider } from "@humeai/voice-react";
+import { useRef, useState, useEffect } from "react";
+import { VoiceProvider, useVoice } from "@humeai/voice-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import Messages from "@/components/voice/Messages";
 import Controls from "@/components/voice/Controls";
 import StartCall from "@/components/voice/StartCall";
-import { useRef, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Speech } from "lucide-react";
 
@@ -14,6 +14,22 @@ import StatusBadge from "@/components/StatusBadge";
 import { createPrompt } from "@/data/prompts";
 import { getSnippetById } from "@/db";
 
+const ActiveSpeaker = ({ speaker }) => {
+  if (speaker === "assistant_message") {
+    return <p>Assistant is speaking...</p>;
+  }
+
+  if (speaker === "user_interruption") {
+    return <p>You are speaking...</p>;
+  }
+
+  if (!speaker) {
+    return null;
+  }
+
+  return <p>Speaker: {speaker}</p>;
+};
+
 export function VoiceChat({ accessToken }) {
   const timeout = useRef(null);
   const ref = useRef(null);
@@ -22,6 +38,8 @@ export function VoiceChat({ accessToken }) {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
   const [snippet, setSnippet] = useState(null);
+
+  const [speaker, setSpeaker] = useState(null);
 
   console.info("VOICE CHAT: ", snippetId, snippet);
 
@@ -81,13 +99,20 @@ export function VoiceChat({ accessToken }) {
         </div>
 
         <VoiceProvider
-          debug={true}
+          // debug={true}
           auth={{ type: "apiKey", value: import.meta.env.VITE_HUME_API_KEY }}
           // auth={{ type: "accessToken", value: accessToken }}
           sessionSettings={{
             systemPrompt: createPrompt(snippet),
           }}
-          onMessage={() => {
+          onOpen={(open) => {
+            console.log("onOPEN", open);
+          }}
+          onMessage={(msg) => {
+            console.log(msg);
+
+            setSpeaker(msg.type);
+
             if (timeout.current) {
               window.clearTimeout(timeout.current);
             }
@@ -121,6 +146,8 @@ export function VoiceChat({ accessToken }) {
                 strokeWidth={2}
                 stroke={"currentColor"}
               />
+              <br />
+              {/* <ActiveSpeaker speaker={speaker} /> */}
             </motion.div>
           </AnimatePresence>
           {/* <Messages ref={ref} /> */}

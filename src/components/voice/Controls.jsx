@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
 import { useVoice } from "@humeai/voice-react";
-import { Mic, MicOff, Phone } from "lucide-react";
+import { Mic, MicOff, Speech } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,17 @@ import { cn } from "@/lib/utils";
 import MicFFT from "@/components/voice/MicFFT";
 
 export default function Controls() {
-  const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();
+  const { disconnect, status, isMuted, unmute, mute, micFft, sendUserInput } =
+    useVoice();
+
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    if (status.value === "connected" && !started) {
+      setStarted(true);
+      sendUserInput("Hello!");
+    }
+  }, [status, started]);
 
   return (
     <div
@@ -66,13 +77,13 @@ export default function Controls() {
               variant={"destructive"}
             >
               <span>
-                <Phone
+                <Speech
                   className={"size-4 opacity-50"}
                   strokeWidth={2}
                   stroke={"currentColor"}
                 />
               </span>
-              <span>End Call</span>
+              <span>End Conversation</span>
             </Button>
           </motion.div>
         ) : null}

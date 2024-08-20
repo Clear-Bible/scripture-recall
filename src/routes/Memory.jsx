@@ -210,7 +210,7 @@ const ScriptureSnippetManager = () => {
   }
 
   return (
-    <div className="p-4 max-w-md mx-auto relative min-h-screen">
+    <div className="w-full justify-self-center align-self-center">
       {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}
 
       {/* <Card className="mb-4"> */}

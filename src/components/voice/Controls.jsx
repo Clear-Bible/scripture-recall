@@ -1,10 +1,12 @@
 import { useVoice } from "@humeai/voice-react";
-import { Button } from "./ui/button";
 import { Mic, MicOff, Phone } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Toggle } from "./ui/toggle";
-import MicFFT from "./MicFFT";
+
+import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
+
+import MicFFT from "@/components/voice/MicFFT";
 
 export default function Controls() {
   const { disconnect, status, isMuted, unmute, mute, micFft } = useVoice();

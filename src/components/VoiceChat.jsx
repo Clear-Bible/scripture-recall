@@ -1,7 +1,7 @@
 import { VoiceProvider } from "@humeai/voice-react";
-import Messages from "./Messages";
-import Controls from "./Controls";
-import StartCall from "./StartCall";
+import Messages from "@/components/voice/Messages";
+import Controls from "@/components/voice/Controls";
+import StartCall from "@/components/voice/StartCall";
 import { useRef, useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
 import {Speech} from "lucide-react";

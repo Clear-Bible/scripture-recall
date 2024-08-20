@@ -1,7 +1,8 @@
 import { useVoice } from "@humeai/voice-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "./ui/button";
 import { Phone } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { Button } from "@/components/ui/button";
 
 export default function StartCall() {
   const { status, connect } = useVoice();

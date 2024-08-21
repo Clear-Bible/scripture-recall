@@ -7,9 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev-ios": "npm run build && npx cap sync && npx cap run ios"
   },
   "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/ios": "^6.1.2",
     "@humeai/voice": "^0.1.10",
     "@humeai/voice-react": "^0.1.10",
     "@radix-ui/react-dialog": "^1.1.1",

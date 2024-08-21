@@ -75,7 +75,7 @@ const NavBar = ({ isVertical }) => {
 const Layout = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex flex-col md:flex-row h-screen w-screen">
+      <div className="flex flex-col md:flex-row h-screen w-screen pt-safe">
         <div className="hidden md:flex md:max-w-32 md:flex-shrink-0">
           <NavBar isVertical={true} />
         </div>
@@ -84,7 +84,7 @@ const Layout = () => {
             <Outlet />
           </div>
         </div>
-        <div className="md:hidden">
+        <div className="md:hidden pb-safe">
           <NavBar isVertical={false} />
         </div>
       </div>

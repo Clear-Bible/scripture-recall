@@ -1,0 +1,8 @@
+{
+  "appId": "com.biblica.syntereo",
+  "appName": "syntereo",
+  "webDir": "dist",
+  "ios": {
+    "scheme": "App"
+  }
+}

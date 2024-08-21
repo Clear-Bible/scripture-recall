@@ -68,7 +68,9 @@ export function VoiceChat({ accessToken }) {
   if (snippet) {
     return (
       <div
-        className={"flex flex-col justify-between items-center w-full h-full"}
+        className={
+          "flex flex-col justify-between items-center max-w-screen h-full"
+        }
       >
         <div className="w-full">
           <Card key={snippet.id}>

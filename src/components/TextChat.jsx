@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getSnippetById } from "@/db";
 import { createPrompt } from "@/data/prompts";
+import Chat from "@/components/Chat"
 
 function TextChat() {
   const { snippetId } = useParams();
@@ -40,6 +41,7 @@ function TextChat() {
         <p>The prompt would be: </p>
         <br />
         <p>{createPrompt(snippet)}</p>
+        <Chat />
       </>
     );
   }

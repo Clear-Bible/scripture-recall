@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./chat.module.css";
 import { AssistantStream } from "openai/lib/AssistantStream";
 import OpenAI from "openai";
+import { createPrompt } from "@/data/prompts";
+import { useParams } from "react-router-dom";
+import { getSnippetById } from "@/db";
 
 const openai = new OpenAI({ 
     dangerouslyAllowBrowser: true, 
@@ -57,6 +60,52 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
     const messagesEndRef = useRef(null);
 
+    const { snippetId } = useParams();
+
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
+    const [snippet, setSnippet] = useState(null);
+
+    const [prompt, setPrompt] = useState(null);
+
+    useEffect(() => {
+        const fetchSnippet = async () => {
+        try {
+            const data = await getSnippetById(snippetId);
+            setSnippet(data);
+            setIsLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setIsLoading(false);
+        }
+        };
+
+        fetchSnippet();
+
+    }, []);
+
+    useEffect(() => {
+        if(snippet != undefined){
+            setPrompt(createPrompt(snippet))
+        }
+    }, [snippet]);
+
+    useEffect(() => {
+
+        const sendPrompt = async () => {
+            if(prompt != null){
+                var response = await sendMessage(messages);
+                console.log("response", response)
+                setMessages([
+                    response
+                ]);
+            }
+        }
+
+        sendPrompt();
+
+    }, [prompt]);
+    
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -65,8 +114,9 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         scrollToBottom();
     }, [messages]);
 
-   // create a new threadID when chat component created
+    // create a new threadID when chat component created
    
+    /* 
     useEffect(() => {
         const createThread = async () => {
             const res = await fetch(`/api/assistants/threads`, {
@@ -77,15 +127,20 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         };
         createThread();
     }, []);
-    
+    */
 
     const sendMessage = async (messages) => { 
         
         //console.log("Send Messages Input", messages)
 
+        var promptAndMessages = [
+            { role: "system", content: prompt },
+            ...messages
+        ]
+
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
-            messages: messages //still need to find a way to prompt the system
+            messages: promptAndMessages
         });
         
         //console.log("GPT Response", completion.choices[0].message);

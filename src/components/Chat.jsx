@@ -80,26 +80,15 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     
 
     const sendMessage = async (messages) => { 
-        /*
-            const response = await fetch(
-                `/api/assistants/threads/${threadId}/messages`,
-                {
-                method: "POST",
-                body: JSON.stringify({
-                    content: text,
-                }),
-                }
-            );
-        */
-
-        console.log("Send Messages Input", messages)
+        
+        //console.log("Send Messages Input", messages)
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: messages //still need to find a way to prompt the system
         });
         
-        console.log("GPT Response", completion.choices[0].message);
+        //console.log("GPT Response", completion.choices[0].message);
 
         //const stream = AssistantStream.fromReadableStream(response.body);
         handleReadableStream(completion);
@@ -127,7 +116,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
     const handleSubmit = async (e) => {
         
-        console.log(messages)
+        //console.log(messages)
         e.preventDefault();
         if (!userInput.trim()) return;
         
@@ -246,7 +235,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     <div className={styles.chatContainer}>
         <div className={styles.messages}>
             {messages.map((msg, index) => (
-                <Message key={index} role={msg.role} text={msg.text} />
+                <Message key={index} role={msg.role} text={msg.content} />
             ))}
             <div ref={messagesEndRef} />
         </div>

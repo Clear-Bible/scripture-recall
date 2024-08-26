@@ -32,9 +32,12 @@ export default function StartCall() {
               <Button
                 className={"flex items-center gap-1.5 -z-50"}
                 onClick={() => {
+                  console.log("Connecting to Hume.AI...");
                   connect()
                     .then(() => {})
-                    .catch(() => {})
+                    .catch((err) => {
+                      console.error("connection error", err);
+                    })
                     .finally(() => {});
                 }}
               >

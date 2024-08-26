@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">syntereo</string>
+    <string name="title_activity_main">syntereo</string>
+    <string name="package_name">com.biblica.syntereo</string>
+    <string name="custom_url_scheme">com.biblica.syntereo</string>
+</resources>

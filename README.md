@@ -17,3 +17,14 @@ VITE_OPENAI_API_KEY=<your API key>
 ```
 
 **DO NOT CHECK `.env.local` file into git.**
+
+## Run iOS Simulator
+
+The ability to deploy this app in a native app store wrapper is being developed for iOS via Capacitor.
+
+Development for iOS happens locally on a mac with XCode and an iOS Simulator.
+
+To test the iOS deployment:
+
+- Install the macOS [preprequisites](https://capacitorjs.com/docs/getting-started/environment-setup) for working with capacitor.
+- Locally run `npm run dev-ios`.

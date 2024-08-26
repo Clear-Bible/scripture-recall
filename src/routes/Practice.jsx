@@ -87,18 +87,24 @@ const Practice = () => {
         </Select>
 
         <div className="flex justify-center space-x-4">
-          <Link to={`voice/${selectedSnippet?.id}`}>
-            <Button disabled={!selectedSnippet} className="flex items-center">
+          <Button disabled={!selectedSnippet} className="inline-block">
+            <Link
+              to={`voice/${selectedSnippet?.id}`}
+              className="flex items-center"
+            >
               <Mic className="mr-2 h-4 w-4" />
               Voice
-            </Button>
-          </Link>
-          <Link to={`text/${selectedSnippet?.id}`}>
-            <Button disabled={!selectedSnippet} className="flex items-center">
+            </Link>
+          </Button>
+          <Button disabled={!selectedSnippet} className="inline-block">
+            <Link
+              to={`text/${selectedSnippet?.id}`}
+              className="flex items-center"
+            >
               <MessageSquare className="mr-2 h-4 w-4" />
               Text
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

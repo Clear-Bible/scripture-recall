@@ -130,8 +130,6 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     */
 
     const sendMessage = async (messages) => { 
-        
-        //console.log("Send Messages Input", messages)
 
         var promptAndMessages = [
             { role: "system", content: prompt },
@@ -142,15 +140,14 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
             model: "gpt-4o-mini",
             messages: promptAndMessages
         });
-        
-        //console.log("GPT Response", completion.choices[0].message);
-
+    
         //const stream = AssistantStream.fromReadableStream(response.body);
-        handleReadableStream(completion);
+        //handleReadableStream(completion);
 
         return completion.choices[0].message;
     };
 
+    /*
     const submitActionResult = async (runId, toolCallOutputs) => {
         const response = await fetch(
         `/api/assistants/threads/actions`,
@@ -168,10 +165,10 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     const stream = AssistantStream.fromReadableStream(response.body);
     handleReadableStream(stream);
     };
-
+    */
+    
     const handleSubmit = async (e) => {
         
-        //console.log(messages)
         e.preventDefault();
         if (!userInput.trim()) return;
         
@@ -191,6 +188,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         scrollToBottom();
     };
 
+    /*
     const handleTextCreated = () => {
         appendMessage("assistant", "");
     };
@@ -236,20 +234,21 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     const handleRunCompleted = () => {
         setInputDisabled(false);
     };
-
+    
     const handleReadableStream = (stream) => {
-        //stream.on("textCreated", handleTextCreated);
-        //stream.on("textDelta", handleTextDelta);
-        //stream.on("imageFileDone", handleImageFileDone);
-        //stream.on("toolCallCreated", toolCallCreated);
-        //stream.on("toolCallDelta", toolCallDelta);
+        stream.on("textCreated", handleTextCreated);
+        stream.on("textDelta", handleTextDelta);
+        stream.on("imageFileDone", handleImageFileDone);
+        stream.on("toolCallCreated", toolCallCreated);
+        stream.on("toolCallDelta", toolCallDelta);
 
-        //stream.on("event", (event) => {
-        //    if (event.event === "thread.run.requires_action")
-        //    handleRequiresAction(event);
-        //    if (event.event === "thread.run.completed") handleRunCompleted();
-        //});
+        stream.on("event", (event) => {
+            if (event.event === "thread.run.requires_action")
+            handleRequiresAction(event);
+            if (event.event === "thread.run.completed") handleRunCompleted();
+        });
     };
+    
 
     const appendToLastMessage = (text) => {
         setMessages((prevMessages) => {
@@ -266,7 +265,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         setMessages((prevMessages) => [...prevMessages, { role, text }]);
     };
 
-    /*
+    
     const annotateLastMessage = (annotations) => {
     setMessages((prevMessages) => {
         const lastMessage = prevMessages[prevMessages.length - 1];
@@ -314,23 +313,3 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 };
 
 export default Chat;
-
-
-/*
-import OpenAI from "openai";
-
-const openai = new OpenAI({ 
-  dangerouslyAllowBrowser: true, 
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY
-});
-
-const completion = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: "Write a haiku about recursion in programming." },
-  ],
-});
-
-return completion.choices[0].message;
-*/

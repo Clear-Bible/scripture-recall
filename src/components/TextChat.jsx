@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Chat from "@/components/Chat"
+import Chat from "@/components/text/Chat";
 
 function TextChat() {
   const [isLoading, setIsLoading] = useState(null);
@@ -9,9 +9,7 @@ function TextChat() {
   }
 
   if (!isLoading) {
-    return (
-      <Chat />
-    );
+    return <Chat />;
   }
 }
 

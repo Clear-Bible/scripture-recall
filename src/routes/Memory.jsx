@@ -190,7 +190,7 @@ const ScriptureSnippetManager = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full px-4 py-4">
       {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}
 
       {/* <Card className="mb-4"> */}

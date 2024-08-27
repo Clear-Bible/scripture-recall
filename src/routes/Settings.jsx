@@ -9,7 +9,7 @@ import ModeToggle from "@/components/ModeToggle";
 
 const Settings = () => {
   return (
-    <>
+    <div className="p-4">
       <h1 className="font-bold text-lg mb-6">Settings</h1>
       <Card>
         <CardHeader>
@@ -20,7 +20,7 @@ const Settings = () => {
           <ModeToggle />
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 };
 

@@ -11,7 +11,8 @@ import { Speech, CircleChevronLeft } from "lucide-react";
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import StatusBadge from "@/components/StatusBadge";
+import ActiveSnippet from "@/components/ActiveSnippet";
+
 import { createPrompt } from "@/data/prompts";
 import { getSnippetById } from "@/db";
 
@@ -72,31 +73,32 @@ export function VoiceChat({ accessToken }) {
           "flex flex-col justify-between items-center max-w-screen h-full"
         }
       >
-        <div className="w-full">
-          <Card key={snippet.id}>
-            <CardHeader>
-              <CardTitle className="text-md">
-                <div className="flex justify-between items-center mb-2">
-                  <Button
-                    className="m-0 p-0"
-                    variant="ghost"
-                    onClick={() => {
-                      navigate(-1);
-                    }}
-                  >
-                    <CircleChevronLeft
-                      strokeWidth={2}
-                      stroke={"currentColor"}
-                    />
-                  </Button>
-                  <div>{snippet.reference}</div>
-                  <div>
-                    <StatusBadge status={snippet.status} />
-                  </div>
-                </div>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="w-full h-[20px] p-4">
+          <ActiveSnippet snippet={snippet} />
+          {/* <Card key={snippet.id}> */}
+          {/*   <CardHeader> */}
+          {/*     <CardTitle className="text-md"> */}
+          {/*       <div className="flex justify-between items-center mb-2"> */}
+          {/*         <Button */}
+          {/*           className="m-0 p-0" */}
+          {/*           variant="ghost" */}
+          {/*           onClick={() => { */}
+          {/*             navigate(-1); */}
+          {/*           }} */}
+          {/*         > */}
+          {/*           <CircleChevronLeft */}
+          {/*             strokeWidth={2} */}
+          {/*             stroke={"currentColor"} */}
+          {/*           /> */}
+          {/*         </Button> */}
+          {/*         <div>{snippet.reference}</div> */}
+          {/*         <div> */}
+          {/*           <StatusBadge status={snippet.status} /> */}
+          {/*         </div> */}
+          {/*       </div> */}
+          {/*     </CardTitle> */}
+          {/*   </CardHeader> */}
+          {/* </Card> */}
         </div>
 
         <VoiceProvider

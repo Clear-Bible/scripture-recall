@@ -189,6 +189,8 @@ const ScriptureSnippetManager = () => {
     return <Loader />;
   }
 
+  console.log(snippets);
+
   return (
     <div className="w-full px-4 py-4">
       {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}

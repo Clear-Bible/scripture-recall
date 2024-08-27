@@ -38,7 +38,29 @@ const CodeMessage = ({ text }) => {
   );
 };
 
-const Message = ({ role, text }) => {
+const TypingIndicator = () => {
+  return (
+    <div className="self-start bg-gray-200 dark:bg-gray-700 rounded-2xl px-4 max-w-[20%] py-2 mt-2 mb-2">
+      <div className="flex justify-center space-x-2">
+        <div className="w-3 h-3 bg-gray-500 rounded-full animate-bounce"></div>
+        <div
+          className="w-3 h-3 bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.1s" }}
+        ></div>
+        <div
+          className="w-3 h-3 bg-gray-500 rounded-full animate-bounce"
+          style={{ animationDelay: "0.2s" }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+const Message = ({ role, text, isTyping }) => {
+  if (isTyping) {
+    return <TypingIndicator />;
+  }
+
   switch (role) {
     case "user":
       return <UserMessage text={text} />;
@@ -55,6 +77,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [threadId, setThreadId] = useState("");
 
   const messagesEndRef = useRef(null);
@@ -106,22 +129,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  // create a new threadID when chat component created
-
-  /* 
-    useEffect(() => {
-        const createThread = async () => {
-            const res = await fetch(`/api/assistants/threads`, {
-            method: "POST",
-            });
-            const data = await res.json();
-            setThreadId(data.threadId);
-        };
-        createThread();
-    }, []);
-    */
+  }, [messages, isTyping]);
 
   const sendMessage = async (messages) => {
     var promptAndMessages = [{ role: "system", content: prompt }, ...messages];
@@ -131,171 +139,80 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
       messages: promptAndMessages,
     });
 
-    //const stream = AssistantStream.fromReadableStream(response.body);
-    //handleReadableStream(completion);
-
     return completion.choices[0].message;
   };
-
-  /*
-    const submitActionResult = async (runId, toolCallOutputs) => {
-        const response = await fetch(
-        `/api/assistants/threads/actions`,
-        {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            runId: runId,
-            toolCallOutputs: toolCallOutputs,
-        }),
-        }
-    );
-    const stream = AssistantStream.fromReadableStream(response.body);
-    handleReadableStream(stream);
-    };
-    */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userInput.trim()) return;
 
-    var tempMessages = [...messages, { role: "user", content: userInput }];
-    var response = await sendMessage(tempMessages);
+    // Immediately add the user's message to the chat
     setMessages((prevMessages) => [
       ...prevMessages,
       { role: "user", content: userInput },
-      response,
     ]);
 
     setUserInput("");
-    //setInputDisabled(true);
+    setInputDisabled(true);
+    setIsTyping(true);
     scrollToBottom();
+
+    try {
+      // Send the message to the AI and wait for the response
+      var response = await sendMessage([
+        ...messages,
+        { role: "user", content: userInput },
+      ]);
+
+      // Add the AI's response to the chat
+      setMessages((prevMessages) => [...prevMessages, response]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      // Optionally, add an error message to the chat
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          role: "system",
+          content: "Sorry, there was an error processing your request.",
+        },
+      ]);
+    } finally {
+      setInputDisabled(false);
+      setIsTyping(false);
+      scrollToBottom();
+    }
   };
 
-  /*
-    const handleTextCreated = () => {
-        appendMessage("assistant", "");
-    };
-
-    const handleTextDelta = (delta) => {
-        if (delta.value != null) {
-            appendToLastMessage(delta.value);
-        }
-        //if (delta.annotations != null) {
-        //    annotateLastMessage(delta.annotations);
-        //}
-    };
-
-    const handleImageFileDone = (image) => {
-        appendToLastMessage(`\n![${image.file_id}](/api/files/${image.file_id})\n`);
-    };
-
-    const toolCallCreated = (toolCall) => {
-        if (toolCall.type !== "code_interpreter") return;
-        appendMessage("code", "");
-    };
-
-    const toolCallDelta = (delta) => {
-        if (delta.type !== "code_interpreter") return;
-        if (!delta.code_interpreter.input) return;
-        appendToLastMessage(delta.code_interpreter.input);
-    };
-
-    const handleRequiresAction = async (event) => {
-        const runId = event.data.id;
-        const toolCalls = event.data.required_action.submit_tool_outputs.tool_calls;
-
-        const toolCallOutputs = await Promise.all(
-            toolCalls.map(async (toolCall) => {
-            const result = await functionCallHandler(toolCall);
-            return { output: result, tool_call_id: toolCall.id };
-            })
-        );
-        setInputDisabled(true);
-        submitActionResult(runId, toolCallOutputs);
-    };
-
-    const handleRunCompleted = () => {
-        setInputDisabled(false);
-    };
-    
-    const handleReadableStream = (stream) => {
-        stream.on("textCreated", handleTextCreated);
-        stream.on("textDelta", handleTextDelta);
-        stream.on("imageFileDone", handleImageFileDone);
-        stream.on("toolCallCreated", toolCallCreated);
-        stream.on("toolCallDelta", toolCallDelta);
-
-        stream.on("event", (event) => {
-            if (event.event === "thread.run.requires_action")
-            handleRequiresAction(event);
-            if (event.event === "thread.run.completed") handleRunCompleted();
-        });
-    };
-    
-
-    const appendToLastMessage = (text) => {
-        setMessages((prevMessages) => {
-            const lastMessage = prevMessages[prevMessages.length - 1];
-            const updatedLastMessage = {
-            ...lastMessage,
-            content: lastMessage.text + text,
-            };
-            return [...prevMessages.slice(0, -1), updatedLastMessage];
-        });
-    };
-
-    const appendMessage = (role, text) => {
-        setMessages((prevMessages) => [...prevMessages, { role, text }]);
-    };
-
-    
-    const annotateLastMessage = (annotations) => {
-    setMessages((prevMessages) => {
-        const lastMessage = prevMessages[prevMessages.length - 1];
-        const updatedLastMessage = {
-        ...lastMessage,
-        };
-        annotations.forEach((annotation) => {
-        if (annotation.type === "file_path") {
-            updatedLastMessage.text = updatedLastMessage.text.replaceAll(
-            annotation.text,
-            `/api/files/${annotation.file_path.file_id}`
-            );
-        }
-        });
-        return [...prevMessages.slice(0, -1), updatedLastMessage];
-    });
-    };
-    */
-
   return (
-    <div className="flex flex-col-reverse h-full w-full">
-      <div className="flex-grow overflow-y-auto p-2.5 flex flex-col order-2 whitespace-pre-wrap">
+    <div className="flex flex-col h-full w-full">
+      <div className="flex flex-col flex-grow overflow-y-auto p-2.5 pb-24">
         {messages.map((msg, index) => (
           <Message key={index} role={msg.role} text={msg.content} />
         ))}
+        {isTyping && <TypingIndicator />}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleSubmit} className="flex w-full p-2.5 pb-10 order-1">
-        <input
-          type="text"
-          className="flex-grow px-6 py-4 mr-2.5 rounded-full border-2 border-transparent text-base bg-gray-200 dark:bg-gray-700 dark:text-white focus:outline-none focus:border-black dark:focus:border-white focus:bg-white dark:focus:bg-gray-600"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter your question"
-        />
-        <button
-          type="submit"
-          className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black border-none text-base rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400"
-          disabled={inputDisabled}
-        >
-          Send
-        </button>
-      </form>
+      <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <form onSubmit={handleSubmit} className="flex w-full p-2.5 pb-6">
+          <input
+            type="text"
+            className="flex-grow px-6 py-4 mr-2.5 rounded-full border-2 border-transparent text-base bg-gray-200 dark:bg-gray-700 dark:text-white focus:outline-none focus:border-black dark:focus:border-white focus:bg-white dark:focus:bg-gray-600"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder="Enter your response"
+            disabled={inputDisabled}
+          />
+          <button
+            type="submit"
+            className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black border-none text-base rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400"
+            disabled={inputDisabled}
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
+
 export default Chat;

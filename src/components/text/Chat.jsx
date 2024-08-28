@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createPrompt } from "@/data/prompts";
 import { getSnippetById } from "@/db";
 import ActiveSnippet from "@/components/ActiveSnippet";
+import Markdown from "react-markdown";
 
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
@@ -33,7 +34,7 @@ const UserMessage = ({ text }) => {
 const AssistantMessage = ({ text }) => {
   return (
     <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
-      {text}
+      <Markdown>{text}</Markdown>
     </div>
   );
 };
@@ -91,7 +92,6 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   const [messages, setMessages] = useState([]);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [threadId, setThreadId] = useState("");
 
   const messagesEndRef = useRef(null);
 
@@ -100,12 +100,10 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   const [userInput, setUserInput] = useState("");
   const textareaRef = useRef(null);
 
-  const { snippetId } = useParams();
-
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const { snippetId } = useParams();
   const [snippet, setSnippet] = useState(null);
-
   const [prompt, setPrompt] = useState(null);
 
   useEffect(() => {
@@ -168,13 +166,13 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         await openai.beta.threads.messages.create(thread.id, {
             role: "user",
             content: userInput,
-            });
+        });
 
-      // Send the message to the AI and wait for the response
-      await sendMessage([
+        // Send the message to the AI and wait for the response
+        await sendMessage([
         ...messages,
         { role: "user", content: userInput },
-      ]);
+        ]);
 
     } catch (error) {
       console.error("Error sending message:", error);
@@ -212,6 +210,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
                 setInputDisabled(false);
                 setIsTyping(false);
                 
+                console.log("event", event)
                 var updatedMessages = [
                     ...messages,
                     {role:event.role, content:text.value},

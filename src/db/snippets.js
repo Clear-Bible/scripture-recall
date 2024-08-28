@@ -24,6 +24,10 @@ function ensureIdAndDate(snippet) {
   };
 }
 
+function ensureStatusIsString(snippet) {
+  return { ...snippet, status: String(snippet.status) };
+}
+
 export async function initializeDatabase() {
   try {
     await db.open();
@@ -58,11 +62,15 @@ export async function getSnippetById(id) {
 }
 
 export async function saveSnippet(snippet) {
-  return db.snippets.add(ensureIdAndDate(snippet));
+  const withDateAndId = ensureIdAndDate(snippet);
+  const withStatusAsString = ensureStatusIsString(withDateAndId);
+  return db.snippets.add(withStatusAsString);
 }
 
 export async function updateSnippet(snippetToUpdate) {
   const { id, ...updateData } = ensureIdAndDate(snippetToUpdate);
+  await db.snippets.update(id, updateData);
+  return { id, ...updateData };
   return db.snippets.update(id, updateData);
 }
 

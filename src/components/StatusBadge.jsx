@@ -8,19 +8,17 @@ import {
 import { updateSnippet } from "@/db/snippets";
 
 const statusOptions = [
-  { value: 1, label: "Don't know it yet", color: "bg-red-500" },
-  { value: 2, label: "Kind of know it", color: "bg-yellow-500" },
-  { value: 3, label: "Know it!", color: "bg-green-500" },
+  { value: "1", label: "Don't know it yet", color: "bg-red-500" },
+  { value: "2", label: "Kind of know it", color: "bg-yellow-500" },
+  { value: "3", label: "Know it!", color: "bg-green-500" },
 ];
 
-function StatusBadge({ snippet }) {
-  const [status, setStatus] = useState(snippet.status || 1);
+function StatusBadge({ snippet, onStatusChange }) {
+  const [status, setStatus] = useState(snippet.status || "1");
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const currentStatus = statusOptions.find(
-    (option) => option.value === Number(status),
-  );
+  const currentStatus = statusOptions.find((option) => option.value === status);
 
   const handleStatusChange = async (newStatus) => {
     setIsUpdating(true);
@@ -28,6 +26,9 @@ function StatusBadge({ snippet }) {
       const updatedSnippet = { ...snippet, status: newStatus };
       await updateSnippet(updatedSnippet);
       setStatus(newStatus);
+      if (onStatusChange) {
+        onStatusChange();
+      }
     } catch (error) {
       console.error("Failed to update snippet status:", error);
       // Optionally, you could add error handling UI here

@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Home, Brain, Book, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
+
 import { ThemeProvider } from "@/ThemeProvider";
 import ModeToggle from "@/components/ModeToggle";
+
+import { initializeDatabase } from "@/db/snippets";
 
 const NavLink = ({ to, children, isVertical }) => {
   const location = useLocation();
@@ -73,6 +77,19 @@ const NavBar = ({ isVertical }) => {
 };
 
 const Layout = () => {
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initializeDatabase();
+        console.log("Database initialized successfully");
+      } catch (error) {
+        console.error("Failed to initialize database:", error);
+      }
+    };
+
+    init();
+  }, []);
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex flex-col md:flex-row h-screen w-screen pt-safe">

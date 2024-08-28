@@ -34,7 +34,7 @@ import {
   getNextId,
   deleteSnippet,
   updateSnippet,
-} from "@/db";
+} from "@/db/snippets";
 import Loader from "@/components/Loader";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -78,8 +78,6 @@ const ScriptureSnippetManager = () => {
   const addSnippet = async () => {
     console.log("add", newSnippet);
     if (newSnippet.reference && newSnippet.body && newSnippet.status) {
-      const newId = await getNextId();
-      newSnippet.id = newId;
       await saveSnippet(newSnippet);
       fetchSnippets();
       setNewSnippet({ reference: "", body: "", status: "1" });
@@ -231,9 +229,7 @@ const ScriptureSnippetManager = () => {
                 <CardTitle className="text-lg">
                   <div className="flex justify-between mb-2">
                     <div>{snippet.reference}</div>
-                    <div>
-                      <StatusBadge status={snippet.status} />
-                    </div>
+                    <div>{snippet && <StatusBadge snippet={snippet} />}</div>
                   </div>
                 </CardTitle>
               </CardHeader>

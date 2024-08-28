@@ -1,4 +1,4 @@
-import { LampDesk } from "lucide-react";
+import { LampDesk, MessagesSquare } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,12 +13,16 @@ import { cn } from "@/lib/utils";
 const Home = () => {
   return (
     <div className="p-4">
-      <div className="flex justify-between w-full">
-        <div className="font-bold text-xl mb-6">Lamp.Bible</div>
-        <LampDesk strokeWidth={2} stroke={"currentColor"} />
+      <div className="flex w-full">
+        <MessagesSquare
+          strokeWidth={2}
+          stroke={"currentColor"}
+          className="mr-2 items-center"
+        />
+        <div className="font-bold text-xl mb-6">Verse</div>
       </div>
       <blockquote className="text-center italic">
-        Your word is a lamp for my feet
+        Internalize scripture through conversation.
       </blockquote>
       <Card className="mt-8">
         <CardHeader>

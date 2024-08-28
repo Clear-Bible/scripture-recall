@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev-ios": "npm run build && npx cap sync && npx cap run ios"
+    "dev:ios": "npm run build && npx cap sync && npx cap run ios",
+    "build:ios": "npm run build && npx cap sync && npx cap copy"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.2",

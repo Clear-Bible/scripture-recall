@@ -13,6 +13,48 @@ const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 });
 
+const thread = await openai.beta.threads.create({
+    messages: [
+      {
+        role: "user",
+        content:
+          "I'm going through a really tough time."
+      },
+    ],
+  });
+  
+  // The thread now has a vector store in its tool resources.
+console.log("thread.id:",thread.id);
+
+const stream = openai.beta.threads.runs
+  .stream(thread.id, {
+    assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
+  })
+  .on("textCreated", () => console.log("assistant >"))
+  .on("toolCallCreated", (event) => console.log("assistant " + event.type))
+  .on("messageDone", async (event) => {
+    if (event.content[0].type === "text") {
+      const { text } = event.content[0];
+      const { annotations } = text;
+      const citations = [];
+
+      let index = 0;
+      for (let annotation of annotations) {
+        text.value = text.value.replace(annotation.text, "[" + index + "]");
+        const { file_citation } = annotation;
+        if (file_citation) {
+          const citedFile = await openai.files.retrieve(file_citation.file_id);
+          citations.push("[" + index + "]" + citedFile.filename);
+        }
+        index++;
+      }
+
+      console.log(text.value);
+      console.log(citations.join("\n"));
+    }
+  });
+
+
 const UserMessage = ({ text }) => {
   return (
     <div className="self-end text-white bg-black dark:bg-white dark:text-black rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">

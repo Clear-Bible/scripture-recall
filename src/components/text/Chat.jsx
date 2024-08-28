@@ -11,49 +11,16 @@ import ActiveSnippet from "@/components/ActiveSnippet";
 const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-});
+});  
 
 const thread = await openai.beta.threads.create({
     messages: [
-      {
+    {
         role: "user",
-        content:
-          "I'm going through a really tough time."
-      },
+        content: "Hello"
+    },
     ],
-  });
-  
-  // The thread now has a vector store in its tool resources.
-console.log("thread.id:",thread.id);
-
-const stream = openai.beta.threads.runs
-  .stream(thread.id, {
-    assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
-  })
-  .on("textCreated", () => console.log("assistant >"))
-  .on("toolCallCreated", (event) => console.log("assistant " + event.type))
-  .on("messageDone", async (event) => {
-    if (event.content[0].type === "text") {
-      const { text } = event.content[0];
-      const { annotations } = text;
-      const citations = [];
-
-      let index = 0;
-      for (let annotation of annotations) {
-        text.value = text.value.replace(annotation.text, "[" + index + "]");
-        const { file_citation } = annotation;
-        if (file_citation) {
-          const citedFile = await openai.files.retrieve(file_citation.file_id);
-          citations.push("[" + index + "]" + citedFile.filename);
-        }
-        index++;
-      }
-
-      console.log(text.value);
-      console.log(citations.join("\n"));
-    }
-  });
-
+});
 
 const UserMessage = ({ text }) => {
   return (
@@ -138,11 +105,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
   const [userInput, setUserInput] = useState("");
   const textareaRef = useRef(null);
-  console.log(
-    textareaRef?.current?.style.height,
-    typeof textareaRef?.current?.style.height,
-  );
-
+  
   const handleInputChange = (e) => {
     setUserInput(e.target.value);
     adjustTextareaHeight();
@@ -156,6 +119,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   };
 
   useEffect(() => {
+    console.log("messages set", messages)
     scrollToBottom();
   }, [messages, isTyping]);
 
@@ -185,6 +149,11 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   useEffect(() => {
     if (snippet != undefined) {
       setPrompt(createPrompt(snippet));
+      
+      //Using the data provided, please provide Bible verses for memorization related to the user's query.  In the file provided, "OSIS" refers to which Bible verse references are associated with a topic.   "Quality Score" refers to what percentage of all votes of a topic a particular verse received.
+      
+
+      //"You are an assistant with the data necessary to recommend Bible verses to memorize.  Please ask the user what he or she would like to memorize.");
     }
   }, [snippet]);
 
@@ -195,35 +164,40 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         setInputDisabled(true);
         setIsTyping(true);
 
-        var response = await sendMessage(messages);
-        console.log("response", response);
-        setMessages([response]);
+        await sendMessage(messages);
 
-        setInputDisabled(false);
-        setIsTyping(false);
+        //setInputDisabled(false);
+        //setIsTyping(false);
       }
     };
 
     sendPrompt();
   }, [prompt]);
 
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
-
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages, isTyping]);
-
   const sendMessage = async (messages) => {
-    var promptAndMessages = [{ role: "system", content: prompt }, ...messages];
+    
+    openai.beta.threads.runs
+    .stream(thread.id, {
+        assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
+    })
+        .on("textCreated", () => console.log("assistant >"))
+        .on("toolCallCreated", (event) => console.log("assistant " + event.type))
+        .on("messageDone", async (event) => {
+            if (event.content[0].type === "text") {
+                const { text } = event.content[0];
+                
+                setInputDisabled(false);
+                setIsTyping(false);
+                
+                var updatedMessages = [
+                    ...messages,
+                    {role:event.role, content:text.value},
+                ]
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: promptAndMessages,
+                console.log("setMessages inside sendMessage to", updatedMessages)
+                setMessages(updatedMessages);
+            }
     });
-
-    return completion.choices[0].message;
   };
 
   const handleSubmit = async (e) => {
@@ -242,14 +216,18 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     scrollToBottom();
 
     try {
+
+        await openai.beta.threads.messages.create(thread.id, {
+            role: "user",
+            content: userInput,
+            });
+
       // Send the message to the AI and wait for the response
-      var response = await sendMessage([
+      await sendMessage([
         ...messages,
         { role: "user", content: userInput },
       ]);
 
-      // Add the AI's response to the chat
-      setMessages((prevMessages) => [...prevMessages, response]);
     } catch (error) {
       console.error("Error sending message:", error);
       // Optionally, add an error message to the chat
@@ -261,8 +239,8 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
         },
       ]);
     } finally {
-      setInputDisabled(false);
-      setIsTyping(false);
+      //setInputDisabled(false);
+      //setIsTyping(false);
       scrollToBottom();
     }
 

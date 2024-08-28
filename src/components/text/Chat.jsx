@@ -97,31 +97,8 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
   const messagesContainerRef = useRef(null);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const [userInput, setUserInput] = useState("");
   const textareaRef = useRef(null);
-  
-  const handleInputChange = (e) => {
-    setUserInput(e.target.value);
-    adjustTextareaHeight();
-  };
-
-  const adjustTextareaHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  };
-
-  useEffect(() => {
-    console.log("messages set", messages)
-    scrollToBottom();
-  }, [messages, isTyping]);
 
   const { snippetId } = useParams();
 
@@ -149,10 +126,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   useEffect(() => {
     if (snippet != undefined) {
       setPrompt(createPrompt(snippet));
-      
       //Using the data provided, please provide Bible verses for memorization related to the user's query.  In the file provided, "OSIS" refers to which Bible verse references are associated with a topic.   "Quality Score" refers to what percentage of all votes of a topic a particular verse received.
-      
-
       //"You are an assistant with the data necessary to recommend Bible verses to memorize.  Please ask the user what he or she would like to memorize.");
     }
   }, [snippet]);
@@ -173,32 +147,6 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
     sendPrompt();
   }, [prompt]);
-
-  const sendMessage = async (messages) => {
-    
-    openai.beta.threads.runs
-    .stream(thread.id, {
-        assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
-    })
-        .on("textCreated", () => console.log("assistant >"))
-        .on("toolCallCreated", (event) => console.log("assistant " + event.type))
-        .on("messageDone", async (event) => {
-            if (event.content[0].type === "text") {
-                const { text } = event.content[0];
-                
-                setInputDisabled(false);
-                setIsTyping(false);
-                
-                var updatedMessages = [
-                    ...messages,
-                    {role:event.role, content:text.value},
-                ]
-
-                console.log("setMessages inside sendMessage to", updatedMessages)
-                setMessages(updatedMessages);
-            }
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -246,6 +194,55 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
 
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
+    }
+  };
+
+  const sendMessage = async (messages) => {
+    
+    openai.beta.threads.runs
+    .stream(thread.id, {
+        assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
+    })
+        .on("textCreated", () => console.log("assistant >"))
+        .on("toolCallCreated", (event) => console.log("assistant " + event.type))
+        .on("messageDone", async (event) => {
+            if (event.content[0].type === "text") {
+                const { text } = event.content[0];
+                
+                setInputDisabled(false);
+                setIsTyping(false);
+                
+                var updatedMessages = [
+                    ...messages,
+                    {role:event.role, content:text.value},
+                ]
+
+                console.log("setMessages inside sendMessage to", updatedMessages)
+                setMessages(updatedMessages);
+            }
+    });
+  };
+
+  useEffect(() => {
+    console.log("messages set", messages)
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setUserInput(e.target.value);
+    adjustTextAreaHeight();
+  };
+
+  const adjustTextAreaHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   };
 

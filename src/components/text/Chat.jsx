@@ -199,7 +199,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
     
     openai.beta.threads.runs
     .stream(thread.id, {
-        assistant_id: "asst_QfqjPRGjixNymlflcayv3cxV",
+        assistant_id: import.meta.env.VITE_OPENAI_BIBLE_VERSE_RECOMMENDER_ID,
     })
         .on("textCreated", () => console.log("assistant >"))
         .on("toolCallCreated", (event) => console.log("assistant " + event.type))

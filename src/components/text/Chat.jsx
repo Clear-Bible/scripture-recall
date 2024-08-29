@@ -196,7 +196,7 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   };
 
   const sendMessage = async (messages) => {
-    
+    var start = Date.now();
     openai.beta.threads.runs
     .stream(thread.id, {
         assistant_id: import.meta.env.VITE_OPENAI_BIBLE_VERSE_RECOMMENDER_ID,
@@ -215,7 +215,8 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
                     ...messages,
                     {role:event.role, content:text.value},
                 ]
-
+                var end = Date.now();
+                console.log("TIME:", end-start);
                 console.log("setMessages inside sendMessage to", updatedMessages)
                 setMessages(updatedMessages);
             }

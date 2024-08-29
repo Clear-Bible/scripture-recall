@@ -14,7 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import ActiveSnippet from "@/components/ActiveSnippet";
 
 import { createPrompt } from "@/data/prompts";
-import { getSnippetById } from "@/db";
+import { getSnippetById } from "@/db/snippets";
 
 const ActiveSpeaker = ({ speaker }) => {
   if (speaker === "assistant_message") {

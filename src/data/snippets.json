@@ -1,20 +1,17 @@
 [
   {
-    "id": "1",
     "reference": "Micah 6:8",
     "body": "He has shown you, O Mortal, what is good.\nAnd what does the Lord require of you?\nTo act justly, to love mercy, and to walk humbly with your God.",
-    "status": 3
+    "status": "3"
   },
   {
-    "id": "2",
     "reference": "Proverbs 3:5 - 8",
     "body": "Trust in the Lord with all your heart\n  and lean not on your own understanding;\nin all your ways submit to him,\n  and he will make your paths straight.\n\nDo not be wise in your own eyes;\n  fear the Lord and shun evil.\nThis will bring health to your body\n  and nourishment to your bones.",
-    "status": 3
+    "status": "3"
   },
   {
-    "id": "3",
     "reference": "Colossians 1:10 - 12a",
     "body": "So that you may live a life worthy of the Lord and please him in every way:\n\nBearing fruit in every good work,\n\nGrowing in the knowledge of God,\n\nBeing strengthened with all power\n  according to his glorious might\n  so that you may have great endurance and patience,\n\nAnd giving joyful thanks to the Father.",
-    "status": 2
+    "status": "2"
   }
 ]

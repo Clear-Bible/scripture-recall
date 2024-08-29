@@ -1,13 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
-import {
-  PlusCircle,
-  Trash2,
-  Edit2,
-  Filter,
-  Book,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { PlusCircle, Trash2, Edit2, Book, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,25 +16,16 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Switch } from "@/components/ui/switch";
 
 import {
   getAllSnippets,
   saveSnippet,
-  getNextId,
   deleteSnippet,
   updateSnippet,
-} from "@/db";
+} from "@/db/snippets";
 import Loader from "@/components/Loader";
 import StatusBadge from "@/components/StatusBadge";
-
-// const Memory = () => {
-//   return <h1>Memory</h1>;
-// };
-
-// export default Memory;
 
 const ScriptureSnippetManager = () => {
   const [error, setError] = useState(null);
@@ -55,41 +38,46 @@ const ScriptureSnippetManager = () => {
     status: "1",
   });
   const [editingIndex, setEditingIndex] = useState(null);
-  // const [statusFilter, setStatusFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showAllPassages, setShowAllPassages] = useState(false);
   const [visiblePassages, setVisiblePassages] = useState({});
 
-  const fetchSnippets = async () => {
+  const fetchSnippets = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getAllSnippets();
       setSnippets(data);
-      setIsLoading(false);
     } catch (err) {
       setError(err.message);
+    } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchSnippets();
-  }, []);
+  }, [fetchSnippets]);
 
   const addSnippet = async () => {
-    console.log("add", newSnippet);
     if (newSnippet.reference && newSnippet.body && newSnippet.status) {
-      const newId = await getNextId();
-      newSnippet.id = newId;
-      await saveSnippet(newSnippet);
-      fetchSnippets();
-      setNewSnippet({ reference: "", body: "", status: "1" });
-      setIsDialogOpen(false);
+      try {
+        await saveSnippet(newSnippet);
+        await fetchSnippets();
+        setNewSnippet({ reference: "", body: "", status: "1" });
+        setIsDialogOpen(false);
+      } catch (err) {
+        setError(err.message);
+      }
     }
   };
 
   const removeSnippet = async (id) => {
-    await deleteSnippet(id);
-    fetchSnippets();
+    try {
+      await deleteSnippet(id);
+      await fetchSnippets();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const editSnippet = (snippet) => {
@@ -99,12 +87,15 @@ const ScriptureSnippetManager = () => {
   };
 
   const changeSnippet = async () => {
-    console.log("change", newSnippet);
-    await updateSnippet(newSnippet);
-    fetchSnippets();
-    setEditingIndex(null);
-    setNewSnippet({ reference: "", body: "", status: "1" });
-    setIsDialogOpen(false);
+    try {
+      await updateSnippet(newSnippet);
+      await fetchSnippets();
+      setEditingIndex(null);
+      setNewSnippet({ reference: "", body: "", status: "1" });
+      setIsDialogOpen(false);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -115,33 +106,13 @@ const ScriptureSnippetManager = () => {
     setNewSnippet({ ...newSnippet, status: value });
   };
 
-  // const handleFilterChange = (value) => {
-  //   setStatusFilter(value);
-  // };
-
-  const handleAddOrUpdateSnippet = () => {
-    console.log("handleAddOrUpdateSnippet");
+  const handleAddOrUpdateSnippet = async () => {
     if (editingIndex !== null) {
-      console.log("change");
-      changeSnippet();
+      await changeSnippet();
     } else {
-      console.log("add");
-      addSnippet();
+      await addSnippet();
     }
   };
-
-  // const cycleStatus = (snippetId) => {
-  //   setSnippets(
-  //     snippets.map((snippet) => {
-  //       if (snippet.id === snippetId) {
-  //         const currentIndex = statusOrder.indexOf(snippet.status);
-  //         const nextIndex = (currentIndex + 1) % statusOrder.length;
-  //         return { ...snippet, status: statusOrder[nextIndex] };
-  //       }
-  //       return snippet;
-  //     }),
-  //   );
-  // };
 
   const togglePassageVisibility = (snippetId) => {
     setVisiblePassages((prev) => ({
@@ -163,13 +134,6 @@ const ScriptureSnippetManager = () => {
     }
   };
 
-  // const filteredSnippets = useMemo(() => {
-  //   if (statusFilter === "all") {
-  //     return snippets;
-  //   }
-  //   return snippets.filter((snippet) => snippet.status === statusFilter);
-  // }, [snippets, statusFilter]);
-
   const EmptyState = () => (
     <div className="text-center py-10">
       <Book className="mx-auto h-12 w-12 text-gray-400" />
@@ -189,38 +153,9 @@ const ScriptureSnippetManager = () => {
     return <Loader />;
   }
 
-  console.log(snippets);
-
   return (
     <div className="w-full px-4 py-4">
-      {/* <h1 className="text-2xl font-bold mb-4">Scripture Snippet Manager</h1> */}
-
-      {/* <Card className="mb-4"> */}
-      {/*   <CardHeader> */}
-      {/*     <CardTitle className="text-lg flex items-center"> */}
-      {/*       <Filter className="mr-2" /> Filter Snippets */}
-      {/*     </CardTitle> */}
-      {/*   </CardHeader> */}
-      {/*   <CardContent> */}
-      {/*     <Select value={statusFilter} onValueChange={handleFilterChange}> */}
-      {/*       <SelectTrigger> */}
-      {/*         <SelectValue placeholder="Filter by status" /> */}
-      {/*       </SelectTrigger> */}
-      {/*       <SelectContent> */}
-      {/*         <SelectItem value="all">All</SelectItem> */}
-      {/*         <SelectItem value="know it">Know it</SelectItem> */}
-      {/*         <SelectItem value="kind of know it">Kind of know it</SelectItem> */}
-      {/*         <SelectItem value="don't know it">Don't know it</SelectItem> */}
-      {/*       </SelectContent> */}
-      {/*     </Select> */}
-      {/*   </CardContent> */}
-      {/* </Card> */}
-
-      {/* <div className="flex items-center justify-between mb-4"> */}
-      {/*   <span className="text-sm font-medium">Show All Passages</span> */}
-      {/*   <Switch checked={showAllPassages} onCheckedChange={toggleAllPassages} /> */}
-      {/* </div> */}
-
+      {error && <div className="text-red-500 mb-4">{error}</div>}
       {snippets.length === 0 ? (
         <EmptyState />
       ) : (
@@ -232,7 +167,12 @@ const ScriptureSnippetManager = () => {
                   <div className="flex justify-between mb-2">
                     <div>{snippet.reference}</div>
                     <div>
-                      <StatusBadge status={snippet.status} />
+                      {snippet && (
+                        <StatusBadge
+                          snippet={snippet}
+                          onStatusChange={fetchSnippets}
+                        />
+                      )}
                     </div>
                   </div>
                 </CardTitle>
@@ -256,7 +196,6 @@ const ScriptureSnippetManager = () => {
                       <Eye className="h-4 w-4" />
                     )}
                   </Button>
-
                   <Button
                     variant="outline"
                     size="icon"
@@ -319,7 +258,7 @@ const ScriptureSnippetManager = () => {
         className="fixed bottom-20 right-4 rounded-full w-16 h-16 shadow-lg"
         onClick={() => {
           setEditingIndex(null);
-          setNewSnippet({ reference: "", body: "", status: "don't know it" });
+          setNewSnippet({ reference: "", body: "", status: "1" });
           setIsDialogOpen(true);
         }}
       >

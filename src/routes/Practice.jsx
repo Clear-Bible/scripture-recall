@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Mic, MessageSquare } from "lucide-react";
 
-import { getAllSnippets, getSnippetById } from "@/db";
+import { getAllSnippets, getSnippetById } from "@/db/snippets";
 import Loader from "@/components/Loader";
 import StatusBadge from "@/components/StatusBadge";
 
@@ -64,7 +64,7 @@ const Practice = () => {
             {selectedSnippet ? (
               <div className="flex w-full justify-between items-center">
                 <span>{selectedSnippet.reference}</span>
-                <StatusBadge status={selectedSnippet.status} />
+                <StatusBadge snippet={selectedSnippet} />
               </div>
             ) : (
               <SelectValue placeholder="Select a snippet for practice" />

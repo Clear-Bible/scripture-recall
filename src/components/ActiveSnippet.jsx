@@ -23,7 +23,7 @@ const ActiveSnippet = ({ snippet }) => {
           </Button>
           <div>{snippet.reference}</div>
           <div>
-            <StatusBadge status={snippet.status} />
+            <StatusBadge snippet={snippet} />
           </div>
         </div>
       </CardHeader>

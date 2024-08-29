@@ -5,7 +5,7 @@ import { Send } from "lucide-react";
 
 import { Textarea } from "@/components/ui/textarea";
 import { createPrompt } from "@/data/prompts";
-import { getSnippetById } from "@/db";
+import { getSnippetById } from "@/db/snippets";
 import ActiveSnippet from "@/components/ActiveSnippet";
 import Markdown from "react-markdown";
 

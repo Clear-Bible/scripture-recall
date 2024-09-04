@@ -14,6 +14,7 @@ To do so, create a `.env.local` file with the following variables:
 VITE_HUME_API_KEY=<your API key>
 VITE_HUME_CLIENT_SECRET=<your secret key>
 VITE_OPENAI_API_KEY=<your API key>
+VITE_OPENAI_BIBLE_VERSE_RECOMMENDER_ID=<your recommender ID>
 ```
 
 **DO NOT CHECK `.env.local` file into git.**

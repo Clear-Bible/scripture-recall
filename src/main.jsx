@@ -13,6 +13,7 @@ import Layout from "@/Layout";
 import Home from "@/routes/Home";
 import Memory from "@/routes/Memory";
 import Practice from "@/routes/Practice";
+import Discover from "@/routes/Discover";
 import Settings from "@/routes/Settings";
 
 import VoiceChat from "@/components/VoiceChat";
@@ -39,7 +40,6 @@ const router = createBrowserRouter([
         path: "practice",
         element: <Practice />,
       },
-
       {
         path: "practice/voice/:snippetId",
         element: <VoiceChat />,
@@ -48,7 +48,10 @@ const router = createBrowserRouter([
         path: "practice/text/:snippetId",
         element: <TextChat />,
       },
-
+      {
+        path: "discover",
+        element: <Discover />,
+      },
       {
         path: "settings",
         element: <Settings />,

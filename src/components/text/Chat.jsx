@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
-import OpenAI from "openai";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Send } from "lucide-react";
-
 import { Textarea } from "@/components/ui/textarea";
-import { createPrompt } from "@/data/prompts";
-import { getSnippetById } from "@/db/snippets";
+import { ChatProvider, useChatContext } from "@/lib/ChatContext";
 import ActiveSnippet from "@/components/ActiveSnippet";
-
-const openai = new OpenAI({
-  dangerouslyAllowBrowser: true,
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-});
+// import {
+//   UserMessage,
+//   AssistantMessage,
+//   CodeMessage,
+//   TypingIndicator,
+// } from "./MessageComponents";
+import useOpenAI from "@/lib/useOpenAI";
+import Markdown from "react-markdown";
 
 const UserMessage = ({ text }) => {
   return (
@@ -24,7 +23,7 @@ const UserMessage = ({ text }) => {
 const AssistantMessage = ({ text }) => {
   return (
     <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
-      {text}
+      <Markdown>{text}</Markdown>
     </div>
   );
 };
@@ -61,9 +60,7 @@ const TypingIndicator = () => {
 };
 
 const Message = ({ role, text, isTyping }) => {
-  if (isTyping) {
-    return <TypingIndicator />;
-  }
+  if (isTyping) return <TypingIndicator />;
 
   switch (role) {
     case "user":
@@ -77,155 +74,20 @@ const Message = ({ role, text, isTyping }) => {
   }
 };
 
-const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
-  // const [userInput, setUserInput] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [inputDisabled, setInputDisabled] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [threadId, setThreadId] = useState("");
-
-  const messagesEndRef = useRef(null);
-
-  const messagesContainerRef = useRef(null);
-
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const [userInput, setUserInput] = useState("");
+const ChatInput = () => {
+  const { userInput, setUserInput, handleSubmit, inputDisabled } =
+    useChatContext();
   const textareaRef = useRef(null);
-  console.log(
-    textareaRef?.current?.style.height,
-    typeof textareaRef?.current?.style.height,
-  );
 
   const handleInputChange = (e) => {
     setUserInput(e.target.value);
-    adjustTextareaHeight();
+    adjustTextAreaHeight();
   };
 
-  const adjustTextareaHeight = () => {
+  const adjustTextAreaHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
-
-  const { snippetId } = useParams();
-
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(null);
-  const [snippet, setSnippet] = useState(null);
-
-  const [prompt, setPrompt] = useState(null);
-
-  useEffect(() => {
-    const fetchSnippet = async () => {
-      try {
-        const data = await getSnippetById(snippetId);
-        setSnippet(data);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setIsLoading(false);
-      }
-    };
-
-    fetchSnippet();
-  }, []);
-
-  useEffect(() => {
-    if (snippet != undefined) {
-      setPrompt(createPrompt(snippet));
-    }
-  }, [snippet]);
-
-  useEffect(() => {
-    const sendPrompt = async () => {
-      if (prompt != null) {
-        setUserInput("");
-        setInputDisabled(true);
-        setIsTyping(true);
-
-        var response = await sendMessage(messages);
-        console.log("response", response);
-        setMessages([response]);
-
-        setInputDisabled(false);
-        setIsTyping(false);
-      }
-    };
-
-    sendPrompt();
-  }, [prompt]);
-
-  // const scrollToBottom = () => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
-
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages, isTyping]);
-
-  const sendMessage = async (messages) => {
-    var promptAndMessages = [{ role: "system", content: prompt }, ...messages];
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: promptAndMessages,
-    });
-
-    return completion.choices[0].message;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!userInput.trim()) return;
-
-    // Immediately add the user's message to the chat
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { role: "user", content: userInput },
-    ]);
-
-    setUserInput("");
-    setInputDisabled(true);
-    setIsTyping(true);
-    scrollToBottom();
-
-    try {
-      // Send the message to the AI and wait for the response
-      var response = await sendMessage([
-        ...messages,
-        { role: "user", content: userInput },
-      ]);
-
-      // Add the AI's response to the chat
-      setMessages((prevMessages) => [...prevMessages, response]);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      // Optionally, add an error message to the chat
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          role: "system",
-          content: "Sorry, there was an error processing your request.",
-        },
-      ]);
-    } finally {
-      setInputDisabled(false);
-      setIsTyping(false);
-      scrollToBottom();
-    }
-
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
     }
   };
 
@@ -237,50 +99,82 @@ const Chat = ({ functionCallHandler = () => Promise.resolve("") }) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
-      {snippet && (
-        <div className="flex-shrink-0 w-full p-4">
-          <ActiveSnippet snippet={snippet} />
-        </div>
-      )}
-      <div className="flex-grow overflow-hidden">
-        <div
-          ref={messagesContainerRef}
-          className="flex flex-col h-full overflow-y-auto p-4 space-y-4"
-        >
-          {messages.map((msg, index) => (
-            <Message key={index} role={msg.role} text={msg.content} />
-          ))}
-          {isTyping && <TypingIndicator />}
-          <div ref={messagesEndRef} />
-        </div>
-      </div>
-      <div className="flex-shrink-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
-        <form onSubmit={handleSubmit} className="flex items-end w-full">
-          <Textarea
-            ref={textareaRef}
-            className="flex-grow px-4 py-2 mr-2 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-black dark:focus:border-white resize-none min-h-[40px] max-h-[200px]"
-            value={userInput}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            disabled={inputDisabled}
-            rows={1}
-          />
-          <button
-            type="submit"
-            className=" text-sm px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400 h-10"
-            disabled={inputDisabled}
-          >
-            <Send strokeWidth={2} stroke={"currentColor"} />
-          </button>
-        </form>
-        <p className="text-xs px-1 mt-2 text-gray-400">
-          Enter to submit. Shift + Enter for new line.
-        </p>
-      </div>
+    <form onSubmit={handleSubmit} className="flex items-end w-full">
+      <Textarea
+        ref={textareaRef}
+        className="flex-grow px-4 py-2 mr-2 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-white focus:outline-none focus:border-black dark:focus:border-white resize-none min-h-[40px] max-h-[200px]"
+        value={userInput}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Type your message..."
+        disabled={inputDisabled}
+        rows={1}
+      />
+      <button
+        type="submit"
+        className="text-sm px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:text-gray-500 dark:disabled:text-gray-400 h-10"
+        disabled={inputDisabled}
+      >
+        <Send strokeWidth={2} stroke="currentColor" />
+      </button>
+    </form>
+  );
+};
+
+const ChatMessages = () => {
+  const { messages, isTyping } = useChatContext();
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
+
+  return (
+    <div className="flex flex-col h-full overflow-y-auto p-4 space-y-4">
+      {messages.map((msg, index) => (
+        <Message key={index} role={msg.role} text={msg.content} />
+      ))}
+      {isTyping && <TypingIndicator />}
+      <div ref={messagesEndRef} />
     </div>
   );
+};
+
+const Chat = ({ mode, snippet, initialPrompt }) => {
+  const openai = useOpenAI();
+  console.log("CHAT openAI?", openai);
+
+  if (!openai) {
+    return <p>Please wait...</p>;
+  }
+
+  if (openai) {
+    return (
+      <ChatProvider
+        mode={mode}
+        snippet={snippet}
+        initialPrompt={initialPrompt}
+        openai={openai}
+      >
+        <div className="flex flex-col h-full w-full">
+          {snippet && (
+            <div className="flex-shrink-0 w-full p-4">
+              <ActiveSnippet snippet={snippet} />
+            </div>
+          )}
+          <div className="flex-grow overflow-hidden">
+            <ChatMessages />
+          </div>
+          <div className="flex-shrink-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4">
+            <ChatInput />
+            <p className="text-xs px-1 mt-2 text-gray-400">
+              Enter to submit. Shift + Enter for new line.
+            </p>
+          </div>
+        </div>
+      </ChatProvider>
+    );
+  }
 };
 
 export default Chat;

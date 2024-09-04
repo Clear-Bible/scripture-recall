@@ -7,6 +7,10 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 
+import { Link } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +42,12 @@ const Home = () => {
           <Progress value={20} className="" />
         </CardContent>
       </Card>
+
+      <div className="mt-6 flex w-full justify-center">
+        <Link to="/discover" className="">
+          <Button className="">Discover passages to memorize</Button>
+        </Link>
+      </div>
     </div>
   );
 };

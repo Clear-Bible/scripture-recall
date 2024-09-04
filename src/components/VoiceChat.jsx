@@ -154,7 +154,7 @@ export function VoiceChat({ accessToken }) {
             </motion.div>
           </AnimatePresence>
           {/* <Messages ref={ref} /> */}
-          <div className="px-4">
+          <div className="px-4 mb-4">
             <Controls />
             <StartCall />
           </div>

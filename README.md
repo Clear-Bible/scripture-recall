@@ -29,3 +29,9 @@ To test the iOS deployment:
 
 - Install the macOS [preprequisites](https://capacitorjs.com/docs/getting-started/environment-setup) for working with capacitor.
 - Locally run `npm run dev-ios`.
+
+# Data Created for this Project
+
+[Bible Topics](https://github.com/Clear-Bible/BibleTopics)
+
+[Kathario `OSIS-reconstitution` branch](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution)

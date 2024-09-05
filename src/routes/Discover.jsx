@@ -11,7 +11,6 @@ import React, { useState, useEffect } from "react";
 import Chat from "@/components/text/Chat";
 import { useParams } from "react-router-dom";
 import { getSnippetById } from "@/db/snippets";
-import { createPrompt } from "@/data/prompts";
 
 const Discover = () => {
   // const { snippetId } = useParams();

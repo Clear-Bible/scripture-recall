@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import ActiveSnippet from "@/components/ActiveSnippet";
 
-import { createPrompt } from "@/data/prompts";
+import { createVoicePracticePrompt } from "@/data/prompts";
 import { getSnippetById } from "@/db/snippets";
 
 const ActiveSpeaker = ({ speaker }) => {
@@ -106,7 +106,7 @@ export function VoiceChat({ accessToken }) {
           auth={{ type: "apiKey", value: import.meta.env.VITE_HUME_API_KEY }}
           // auth={{ type: "accessToken", value: accessToken }}
           sessionSettings={{
-            systemPrompt: createPrompt(snippet),
+            systemPrompt: createVoicePracticePrompt(snippet),
           }}
           onOpen={(open) => {
             console.log("onOPEN", open);

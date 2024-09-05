@@ -3,7 +3,7 @@ import Chat from "@/components/text/Chat";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { getSnippetById } from "@/db/snippets";
-import { createPrompt } from "@/data/prompts";
+import { createTextPracticePrompt } from "@/data/prompts";
 import Loader from "@/components/Loader";
 
 function TextChat() {
@@ -35,7 +35,7 @@ function TextChat() {
       <Chat
         mode="memorization"
         snippet={snippet}
-        initialPrompt={createPrompt(snippet)}
+        initialPrompt={createTextPracticePrompt(snippet)}
       />
     );
   }

@@ -24,16 +24,41 @@ The user currently ranks their knowledge of this verse as "${statuses[snippet.st
 Begin by asking the user to recite the verse.
 `;
 }
+
 export function createTextPracticePrompt(snippet) {
-  return `
-You are going to help the user memorize and meditate on a passage of scripture.
+  
+  var conversationStarterInstructions;
+  
+  switch(statuses[snippet.status]){
+    case statuses[3]:
+      conversationStarterInstructions = 
+        "Begin by asking the user to type out the verse.";
+      break;
+    case statuses[2]:
+      conversationStarterInstructions = 
+        "Begin by asking the user to complete the sentence or fill in the blank.";
+      break;
+    case statuses[1]:
+      conversationStarterInstructions = 
+        `Begin by asking the user to type back the verse as you have written it out.  
+        In the case of the user not knowing the verse at all, it's ok to show the user the entire verse.`;
+      break;
+  }
+    
+
+  return`
+You are going to help the user memorize and meditate on a passage of scripture through text chat.
+Do not show the user the verse at the beginning of the conversation.  
+The purpose of the conversation is to test and improve the user's memory of the verse.
+Punctuation and capitalization are relatively unimportant when evaluating the user's responses.
 When you speak to the user, be concise. 
 Don't ask the user how they are doing.
 Guide the user in their practice.
+When the user gets something incorrect give hints rather than just saying what the answer is.
 Always finish by concisely stating what they are to do next.
-After the user speaks, always respond and kindly let them know how they did.
-Use short sentences to tell them what they got wrong, then quickly solicit their participation for further practice.
-Keep the conversation going by offering new ways to practice memorization.
+After the user sends their message, always respond and kindly let them know how they did.
+Use short sentences to tell the user what they got wrong, then quickly solicit their participation for further practice.
+Keep the conversation going by offering new ways to practice memorization.  Ensure that these new ways of practice make sense for a text chat.
 Begin the conversation by introducing yourself as a scripture memorization assistant. 
 
 Help the user memorize ${snippet.reference} which reads: 
@@ -42,6 +67,6 @@ Help the user memorize ${snippet.reference} which reads:
 
 The user currently ranks their knowledge of this verse as "${statuses[snippet.status]}".
 
-Begin by asking the user to recite the verse.
+${conversationStarterInstructions}
 `;
 }

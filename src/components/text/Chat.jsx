@@ -11,6 +11,9 @@ import ActiveSnippet from "@/components/ActiveSnippet";
 // } from "./MessageComponents";
 import useOpenAI from "@/lib/useOpenAI";
 import Markdown from "react-markdown";
+import {
+  saveSnippet,
+} from "@/db/snippets";
 
 const UserMessage = ({ text }) => {
   return (
@@ -20,7 +23,15 @@ const UserMessage = ({ text }) => {
   );
 };
 
-const handleAddToMemory = (tokens, index) => {
+var emptySnippet = {
+  id: "",
+  reference: "",
+  body: "",
+  status: "1",
+};
+var newSnippet = emptySnippet;
+
+const handleAddToMemory = async (tokens, index) => {
   var verse = tokens[index-1];
 
   verse = verse.replace(/\n/g, "");
@@ -30,11 +41,23 @@ const handleAddToMemory = (tokens, index) => {
 
   var length = verseArray.length
 
-  var verseText = verseArray[length-1].trim();
-  var verseRef = verseArray[length-2].trim();
+  newSnippet.body = verseArray[length-1].trim();
+  newSnippet.reference = verseArray[length-2].trim();
+  
+  await addSnippet();
 
-  console.log('verseRef:', verseRef);
-  console.log('verseText:', verseText);
+};
+
+const addSnippet = async () => {
+  if (newSnippet.reference && newSnippet.body && newSnippet.status) {
+    try {
+      await saveSnippet(newSnippet);
+      newSnippet = emptySnippet;
+      //setIsDialogOpen(false);
+    } catch (err) {
+      //setError(err.message);
+    }
+  }
 };
 
 const AssistantMessage = ({ text }) => {

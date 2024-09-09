@@ -16,6 +16,27 @@ import ActiveSnippet from "@/components/ActiveSnippet";
 import { createVoicePracticePrompt } from "@/data/prompts";
 import { getSnippetById } from "@/db/snippets";
 
+const Indicator = () => {
+  const { status } = useVoice();
+
+  return (
+    <>
+      {status.value === "connected" && (
+        <Speech
+          className="size-36 opacity-50"
+          strokeWidth={2}
+          stroke={"currentColor"}
+        />
+      )}
+
+      {status?.value !== "connected" && (
+        <p className="text-xl text-muted-foreground">
+          Find a quiet place to practice.
+        </p>
+      )}
+    </>
+  );
+};
 const ActiveSpeaker = ({ speaker }) => {
   if (speaker === "assistant_message") {
     return <p>Assistant is speaking...</p>;
@@ -144,11 +165,7 @@ export function VoiceChat({ accessToken }) {
                 exit: { opacity: 0 },
               }}
             >
-              <Speech
-                className="size-36 opacity-50"
-                strokeWidth={2}
-                stroke={"currentColor"}
-              />
+              <Indicator />
               <br />
               {/* <ActiveSpeaker speaker={speaker} /> */}
             </motion.div>

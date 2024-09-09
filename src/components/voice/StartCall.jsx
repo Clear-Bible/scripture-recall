@@ -11,7 +11,7 @@ export default function StartCall() {
     <AnimatePresence>
       {status.value !== "connected" ? (
         <motion.div
-          className={"w-full flex flex-col items-center justify-center"}
+          className={"w-full flex flex-col items-center justify-between"}
           initial="initial"
           animate="enter"
           exit="exit"

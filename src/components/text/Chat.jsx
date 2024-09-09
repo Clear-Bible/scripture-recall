@@ -31,23 +31,6 @@ var emptySnippet = {
 };
 var newSnippet = emptySnippet;
 
-const handleAddToMemory = async (tokens, index) => {
-  var verse = tokens[index-1];
-
-  verse = verse.replace(/\n/g, "");
-  verse = verse.replace(/&nbsp;/g, "");
-
-  var verseArray = verse.split(/\*\*/);
-
-  var length = verseArray.length
-
-  newSnippet.body = verseArray[length-1].trim();
-  newSnippet.reference = verseArray[length-2].trim();
-  
-  await addSnippet();
-
-};
-
 const addSnippet = async () => {
   if (newSnippet.reference && newSnippet.body && newSnippet.status) {
     try {
@@ -64,13 +47,35 @@ const AssistantMessage = ({ text }) => {
 
   var tokens = text.split("<split/>");
 
+  const [hiddenButtons, setHiddenButtons] = useState(new Array(tokens.length).fill(false));
+
+  const handleAddToMemory = async (tokens, index) => {
+    var verse = tokens[index-1];
+  
+    verse = verse.replace(/\n/g, "");
+    verse = verse.replace(/&nbsp;/g, "");
+  
+    var verseArray = verse.split(/\*\*/);
+  
+    var length = verseArray.length
+  
+    newSnippet.body = verseArray[length-1].trim();
+    newSnippet.reference = verseArray[length-2].trim();
+    
+    await addSnippet();
+  
+    setHiddenButtons((prevHiddenButtons) =>
+      prevHiddenButtons.map((isHidden, i) => (i === index ? true : isHidden))
+    );
+  };
+
   return (
     <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
       
       {tokens.map((token, index) => {
         if (token.includes("BUTTON")) {
           // Handle JSX rendering
-            return <button key={index} onClick={() => handleAddToMemory(tokens, index)}
+            return <button key={index} onClick={() => handleAddToMemory(tokens, index)} hidden={hiddenButtons[index]}
             className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2" >
               Add to Memory
             </button>;

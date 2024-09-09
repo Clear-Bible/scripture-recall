@@ -154,12 +154,6 @@ export const ChatProvider = ({
       .on("messageDone", async (event) => {
         if (event.content[0].type === "text") {
           const { text } = event.content[0];
-
-          console.log(text.value);
-          var newLineLess = text.value.replace(/\n/g, "");
-          console.log(newLineLess);
-          console.log(newLineLess.split(/&nbsp;|\*\*/));// /&nbsp;\s{2}\*\*|\*\*|&nbsp;/
-
           setMessages((prev) => [
             ...prev,
             { role: event.role, content: text.value },

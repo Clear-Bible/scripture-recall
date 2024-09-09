@@ -20,9 +20,22 @@ const UserMessage = ({ text }) => {
   );
 };
 
-const MarkdownInput = ({ tokens }) => (
-  <button></button>
-);
+const handleAddToMemory = (tokens, index) => {
+  var verse = tokens[index-1];
+
+  verse = verse.replace(/\n/g, "");
+  verse = verse.replace(/&nbsp;/g, "");
+
+  var verseArray = verse.split(/\*\*/);
+
+  var length = verseArray.length
+
+  var verseText = verseArray[length-1].trim();
+  var verseRef = verseArray[length-2].trim();
+
+  console.log('verseRef:', verseRef);
+  console.log('verseText:', verseText);
+};
 
 const AssistantMessage = ({ text }) => {
 
@@ -34,13 +47,16 @@ const AssistantMessage = ({ text }) => {
       {tokens.map((token, index) => {
         if (token.includes("BUTTON")) {
           // Handle JSX rendering
-          return <button key={index}>Click Me!</button>;
+            return <button key={index} onClick={() => handleAddToMemory(tokens, index)}
+            className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2" >
+              Add to Memory
+            </button>;
         } else if (typeof token === 'string') {
           // Pass only valid strings to ReactMarkdown
-          return <Markdown key={index}>{token}</Markdown>;
+            return <Markdown key={index}>{token}</Markdown>;
         } else {
-          console.error(`Unexpected value for token: ${token}`);
-          return null; // Skip non-string tokens
+            console.error(`Unexpected value for token: ${token}`);
+            return null; // Skip non-string tokens
         }
       })}
 

@@ -20,10 +20,30 @@ const UserMessage = ({ text }) => {
   );
 };
 
+const MarkdownInput = ({ tokens }) => (
+  <button></button>
+);
+
 const AssistantMessage = ({ text }) => {
+
+  var tokens = text.split("<split/>");
+
   return (
     <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
-      <Markdown>{text}</Markdown>
+      
+      {tokens.map((token, index) => {
+        if (token.includes("BUTTON")) {
+          // Handle JSX rendering
+          return <button key={index}>Click Me!</button>;
+        } else if (typeof token === 'string') {
+          // Pass only valid strings to ReactMarkdown
+          return <Markdown key={index}>{token}</Markdown>;
+        } else {
+          console.error(`Unexpected value for token: ${token}`);
+          return null; // Skip non-string tokens
+        }
+      })}
+
     </div>
   );
 };

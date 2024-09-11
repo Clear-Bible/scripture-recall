@@ -10,7 +10,7 @@ import {
 import React, { useState, useEffect } from "react";
 import Chat from "@/components/text/Chat";
 import { useParams } from "react-router-dom";
-import { getSnippetById } from "@/db/snippets";
+import { getVerseByReference } from "@/db/bible";
 
 const Discover = () => {
   // const { snippetId } = useParams();

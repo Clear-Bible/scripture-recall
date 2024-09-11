@@ -15,6 +15,7 @@ import {
   saveSnippet,
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
+import { getVerseByReference } from "@/db/bible";
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
 
@@ -47,11 +48,42 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
   };
   
   const AssistantMessage = ({ text }) => {
-  
-    var tokens = text.split("<split/>");
-  
-    const [hiddenButtons, setHiddenButtons] = useState(new Array(tokens.length).fill(false));
-  
+    console.log(text);
+
+    const [refTokens, setRefTokens] = useState(text.split("<ref/>"));
+    const [fullText, setFullText] = useState("");
+    const [buttonTokens, setButtonTokens] = useState([]);
+
+    useEffect(()=>{
+      async function addVerseBodies() {
+        var withBodies = await Promise.all(
+          refTokens.map(async (token) => {
+            if (token.includes("**")) {
+              var verseRef = token;
+              verseRef = "GEN.1.1"; // Transform GPT verse ref into database compatible range of refs
+              var verse = await getVerseByReference(verseRef); // Get verses from database
+              return token + "  \n" + verse.body; // Modify token
+            } else {
+              return token;
+            }
+          })
+        );
+        
+        return withBodies.join(" ");
+      }
+      
+      addVerseBodies().then(withBodies => {
+        console.log("withBodies", withBodies);
+        setFullText(withBodies);
+      });
+    },[refTokens]);
+
+    useEffect(()=>{
+      setButtonTokens(fullText.split("<button/>"))
+    },[fullText]);
+
+    const [hiddenButtons, setHiddenButtons] = useState(new Array(buttonTokens.length).fill(false));
+
     const handleAddToMemory = async (tokens, index) => {
       var verse = tokens[index-1];
     
@@ -75,10 +107,10 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
     return (
       <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
         
-        {tokens.map((token, index) => {
+        {buttonTokens.map((token, index) => {
           if (token.includes("BUTTON")) {
             // Handle JSX rendering
-              return <button key={index} onClick={() => handleAddToMemory(tokens, index)} hidden={hiddenButtons[index]}
+              return <button key={index} onClick={() => handleAddToMemory(buttonTokens, index)} hidden={hiddenButtons[index]}
               className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2" >
                 Add to Memory
               </button>;

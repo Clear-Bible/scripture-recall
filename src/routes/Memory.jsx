@@ -225,10 +225,11 @@ const ScriptureSnippetManager = () => {
         editingIndex={editingIndex}
         handleInputChange={handleInputChange}
         handleStatusChange={handleStatusChange}
-        handleAddOrUpdateSnippet={handleAddOrUpdateSnippet}/>
+        handleAddOrUpdateSnippet={handleAddOrUpdateSnippet}
+      />
 
       <Button
-        className="fixed bottom-20 right-4 rounded-full w-16 h-16 shadow-lg"
+        className="fixed bottom-0 mb-20 md:mb-4 right-4 rounded-full w-16 h-16 shadow-lg"
         onClick={() => {
           setEditingIndex(null);
           setNewSnippet({ reference: "", body: "", status: "1" });
@@ -237,6 +238,14 @@ const ScriptureSnippetManager = () => {
       >
         <PlusCircle className="h-6 w-6" />
       </Button>
+
+      <style jsx>{`
+        @supports (-webkit-touch-callout: none) {
+          .fixed.bottom-0 {
+            bottom: env(safe-area-inset-bottom);
+          }
+        }
+      `}</style>
     </div>
   );
 };

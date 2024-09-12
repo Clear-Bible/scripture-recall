@@ -16,6 +16,7 @@ import {
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
 import { getVersesByReference } from "@/db/bible";
+import { bcv_parser } from "bible-passage-reference-parser/js/en_bcv_parser";
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
 
@@ -56,11 +57,23 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
 
     useEffect(()=>{
       async function addVerseBodies() {
+        const bcv = new bcv_parser();
+        
+        bcv.set_options({
+          consecutive_combination_strategy: "separate",
+          osis_compaction_strategy: "bcv",
+          sequence_combination_strategy: "separate"
+            });
+        console.log(bcv)
+        console.log(bcv.parse("Matthew 5,6,7").osis()); // "Gen.1.1-Gen.1.31"
+
         var withBodies = await Promise.all(
           refTokens.map(async (token) => {
             if (token.includes("**")) {
               var verseRefs = token;
+
               verseRefs = ["Gen.1.1", "Gen.1.2"]; // Transform GPT verse ref into database compatible range of refs
+
               var verses = await getVersesByReference(verseRefs); // Get verses from database
 
               var body = ""

@@ -65,6 +65,10 @@ export function getVerseByReference(id) {
   return db.verses.get(id);
 }
 
+export function getVersesByReference(ids) {
+  return db.verses.bulkGet(ids);
+}
+
 /*
 export async function saveSnippet(snippet) {
   const withDateAndId = ensureIdAndDate(snippet);

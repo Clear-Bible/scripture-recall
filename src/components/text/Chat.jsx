@@ -15,7 +15,7 @@ import {
   saveSnippet,
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
-import { getVerseByReference } from "@/db/bible";
+import { getVersesByReference } from "@/db/bible";
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
 
@@ -59,10 +59,17 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
         var withBodies = await Promise.all(
           refTokens.map(async (token) => {
             if (token.includes("**")) {
-              var verseRef = token;
-              verseRef = "GEN.1.1"; // Transform GPT verse ref into database compatible range of refs
-              var verse = await getVerseByReference(verseRef); // Get verses from database
-              return token + "  \n" + verse.body; // Modify token
+              var verseRefs = token;
+              verseRefs = ["Gen.1.1", "Gen.1.2"]; // Transform GPT verse ref into database compatible range of refs
+              var verses = await getVersesByReference(verseRefs); // Get verses from database
+
+              var body = ""
+              verses.forEach((verse)=>{
+                body+= verse.body;
+              });
+
+              console.log(body)
+              return token + "  \n" + body; // Modify token
             } else {
               return token;
             }

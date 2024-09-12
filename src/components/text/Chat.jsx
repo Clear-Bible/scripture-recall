@@ -15,6 +15,11 @@ import {
   saveSnippet,
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
+import { getVersesByReference } from "@/db/bible";
+let bcv_parser;
+import('bible-passage-reference-parser/js/en_bcv_parser').then(module => {
+  bcv_parser = module.bcv_parser;
+});
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
 
@@ -47,11 +52,83 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
   };
   
   const AssistantMessage = ({ text }) => {
-  
-    var tokens = text.split("<split/>");
-  
-    const [hiddenButtons, setHiddenButtons] = useState(new Array(tokens.length).fill(false));
-  
+    //console.log(text);
+
+    const [refTokens, setRefTokens] = useState(text.split("<ref/>"));
+    const [fullText, setFullText] = useState("");
+    const [buttonTokens, setButtonTokens] = useState([]);
+
+    useEffect(()=>{
+      async function addVerseBodies() {
+        const bcv = new bcv_parser();
+        
+        bcv.set_options({
+          consecutive_combination_strategy: "separate",
+          osis_compaction_strategy: "bcv",
+          sequence_combination_strategy: "separate"
+            });
+
+        var withBodies = await Promise.all(
+          refTokens.map(async (token) => {
+            if (token.includes("**")) {
+              var verseRefs = token;
+              // Transform GPT verse ref into database compatible range of refs
+              var parsedReference = bcv.parse(verseRefs).osis();
+       
+              var separateVerses = []
+              var referenceRanges = parsedReference.split(",");
+              
+              referenceRanges.map((refRange)=>{
+                var rangeEnds = refRange.split("-")
+                var startArr = rangeEnds[0].split(".");
+                var endArr = []
+                var endVerse = ""
+                if(rangeEnds.length>1){
+                  endArr = rangeEnds[1].split(".");
+                  endVerse = endArr[2]
+                }
+                else{
+                  endVerse = startArr[2];
+                }
+                for (let i = startArr[2]; i < Number(endVerse)+1; i++) {
+                  separateVerses.push(startArr[0]+"."+startArr[1]+"."+i)
+                }
+              });
+              
+              var databaseVerses=[]
+              try{
+                databaseVerses = await getVersesByReference(separateVerses); // Get verses from database
+              }
+              catch{
+                databaseVerses=[{"body":"Verse reference not found."}]
+              }
+
+              var unifiedBody = ""
+              databaseVerses.forEach((databaseVerse)=>{
+                unifiedBody+= databaseVerse.body;
+              });
+              return token + "  \n" + unifiedBody; // Modify token
+            } else {
+              return token;
+            }
+          })
+        );
+        
+        return withBodies.join(" ");
+      }
+      
+      addVerseBodies().then(withBodies => {
+        console.log("withBodies", withBodies);
+        setFullText(withBodies);
+      });
+    },[refTokens]);
+
+    useEffect(()=>{
+      setButtonTokens(fullText.split("<button/>"))
+    },[fullText]);
+
+    const [hiddenButtons, setHiddenButtons] = useState(new Array(buttonTokens.length).fill(false));
+
     const handleAddToMemory = async (tokens, index) => {
       var verse = tokens[index-1];
     
@@ -75,10 +152,10 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
     return (
       <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
         
-        {tokens.map((token, index) => {
+        {buttonTokens.map((token, index) => {
           if (token.includes("BUTTON")) {
             // Handle JSX rendering
-              return <button key={index} onClick={() => handleAddToMemory(tokens, index)} hidden={hiddenButtons[index]}
+              return <button key={index} onClick={() => handleAddToMemory(buttonTokens, index)} hidden={hiddenButtons[index]}
               className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2" >
                 Add to Memory
               </button>;

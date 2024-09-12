@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/ThemeProvider";
 import ModeToggle from "@/components/ModeToggle";
 
 import { initializeDatabase } from "@/db/snippets";
+import { initializeBibleDatabase } from "@/db/bible";
 
 const NavLink = ({ to, children, isVertical }) => {
   const location = useLocation();
@@ -82,6 +83,8 @@ const Layout = () => {
       try {
         await initializeDatabase();
         console.log("Database initialized successfully");
+        await initializeBibleDatabase();
+        console.log("Bible Database initialized successfully");
       } catch (error) {
         console.error("Failed to initialize database:", error);
       }

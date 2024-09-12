@@ -15,12 +15,6 @@ class BibleDatabase extends Dexie {
 
 const db = new BibleDatabase();
 
-/*
-function ensureStatusIsString(snippet) {
-  return { ...snippet, status: String(snippet.status) };
-}
-*/
-
 export async function initializeBibleDatabase() {
   try {
     await db.open();
@@ -55,42 +49,9 @@ function ensureReferenceAndDate(verse) {
   };
 }
 
-/*
-export async function getAllSnippets() {
-  return db.snippets.orderBy("createdAt").toArray();
-}
-*/
-
-export function getVerseByReference(id) {
-  return db.verses.get(id);
-}
-
 export function getVersesByReference(ids) {
   return db.verses.bulkGet(ids);
 }
-
-/*
-export async function saveSnippet(snippet) {
-  const withDateAndId = ensureIdAndDate(snippet);
-  const withStatusAsString = ensureStatusIsString(withDateAndId);
-  return db.snippets.add(withStatusAsString);
-}
-*/
-
-/*
-export async function updateSnippet(snippetToUpdate) {
-  const { id, ...updateData } = ensureIdAndDate(snippetToUpdate);
-  await db.snippets.update(id, updateData);
-  return { id, ...updateData };
-  return db.snippets.update(id, updateData);
-}
-*/
-
-/*
-export async function deleteSnippet(snippetId) {
-  return db.snippets.delete(snippetId);
-}
-*/
 
 export async function getNextId() {
   return generateId();

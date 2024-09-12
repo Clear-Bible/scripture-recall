@@ -23,7 +23,7 @@ const Home = () => {
           stroke={"currentColor"}
           className="mr-2 items-center"
         />
-        <div className="font-bold text-xl mb-6">Verse</div>
+        <div className="font-bold text-xl mb-6">ScriptureRecall</div>
       </div>
       <blockquote className="text-center italic">
         Internalize scripture through conversation.

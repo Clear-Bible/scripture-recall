@@ -49,7 +49,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
   };
   
   const AssistantMessage = ({ text }) => {
-    console.log(text);
+    //console.log(text);
 
     const [refTokens, setRefTokens] = useState(text.split("<ref/>"));
     const [fullText, setFullText] = useState("");
@@ -91,8 +91,14 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
                   separateVerses.push(startArr[0]+"."+startArr[1]+"."+i)
                 }
               });
-
-              var databaseVerses = await getVersesByReference(separateVerses); // Get verses from database
+              
+              var databaseVerses=[]
+              try{
+                databaseVerses = await getVersesByReference(separateVerses); // Get verses from database
+              }
+              catch{
+                databaseVerses=[{"body":"Verse reference not found."}]
+              }
 
               var unifiedBody = ""
               databaseVerses.forEach((databaseVerse)=>{

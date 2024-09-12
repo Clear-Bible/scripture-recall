@@ -64,25 +64,41 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
           osis_compaction_strategy: "bcv",
           sequence_combination_strategy: "separate"
             });
-        console.log(bcv)
-        console.log(bcv.parse("Matthew 5,6,7").osis()); // "Gen.1.1-Gen.1.31"
 
         var withBodies = await Promise.all(
           refTokens.map(async (token) => {
             if (token.includes("**")) {
               var verseRefs = token;
-
-              verseRefs = ["Gen.1.1", "Gen.1.2"]; // Transform GPT verse ref into database compatible range of refs
-
-              var verses = await getVersesByReference(verseRefs); // Get verses from database
-
-              var body = ""
-              verses.forEach((verse)=>{
-                body+= verse.body;
+              // Transform GPT verse ref into database compatible range of refs
+              var parsedReference = bcv.parse(verseRefs).osis();
+       
+              var separateVerses = []
+              var referenceRanges = parsedReference.split(",");
+              
+              referenceRanges.map((refRange)=>{
+                var rangeEnds = refRange.split("-")
+                var startArr = rangeEnds[0].split(".");
+                var endArr = []
+                var endVerse = ""
+                if(rangeEnds.length>1){
+                  endArr = rangeEnds[1].split(".");
+                  endVerse = endArr[2]
+                }
+                else{
+                  endVerse = startArr[2];
+                }
+                for (let i = startArr[2]; i < Number(endVerse)+1; i++) {
+                  separateVerses.push(startArr[0]+"."+startArr[1]+"."+i)
+                }
               });
 
-              console.log(body)
-              return token + "  \n" + body; // Modify token
+              var databaseVerses = await getVersesByReference(separateVerses); // Get verses from database
+
+              var unifiedBody = ""
+              databaseVerses.forEach((databaseVerse)=>{
+                unifiedBody+= databaseVerse.body;
+              });
+              return token + "  \n" + unifiedBody; // Modify token
             } else {
               return token;
             }

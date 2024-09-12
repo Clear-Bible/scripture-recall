@@ -16,7 +16,10 @@ import {
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
 import { getVersesByReference } from "@/db/bible";
-import { bcv_parser } from "bible-passage-reference-parser/js/en_bcv_parser";
+let bcv_parser;
+import('bible-passage-reference-parser/js/en_bcv_parser').then(module => {
+  bcv_parser = module.bcv_parser;
+});
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
 

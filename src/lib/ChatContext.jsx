@@ -22,7 +22,7 @@ export const ChatProvider = ({
   useEffect(() => {
     const initializeChat = async () => {
       if (!openai) return; // Wait until OpenAI is initialized
-
+      setInputDisabled(true);
       try {
         setIsTyping(true);
         if (mode === "discovery") {
@@ -89,6 +89,7 @@ export const ChatProvider = ({
         setError("Failed to initialize chat. Please try again.");
       } finally {
         setIsTyping(false);
+        setInputDisabled(false);
       }
     };
 

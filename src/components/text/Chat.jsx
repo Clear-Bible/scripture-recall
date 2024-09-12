@@ -16,7 +16,7 @@ import {
 } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
 import { getVersesByReference } from "@/db/bible";
-let bcv_parser;
+let bcv_parser = null;
 import('bible-passage-reference-parser/js/en_bcv_parser').then(module => {
   bcv_parser = module.bcv_parser;
 });

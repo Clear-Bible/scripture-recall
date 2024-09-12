@@ -11,18 +11,13 @@ import ActiveSnippet from "@/components/ActiveSnippet";
 // } from "./MessageComponents";
 import useOpenAI from "@/lib/useOpenAI";
 import Markdown from "react-markdown";
-import {
-  saveSnippet,
-} from "@/db/snippets";
+import { saveSnippet } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
 import { getVersesByReference } from "@/db/bible";
-let bcv_parser;
-import('bible-passage-reference-parser/js/en_bcv_parser').then(module => {
-  bcv_parser = module.bcv_parser;
-});
+
+import * as bcvLib from "bible-passage-reference-parser/js/en_bcv_parser";
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
-
   const UserMessage = ({ text }) => {
     return (
       <div className="self-end text-white bg-black dark:bg-white dark:text-black rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
@@ -30,14 +25,14 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       </div>
     );
   };
-  
+
   const [newSnippet, setNewSnippet] = useState({
     id: "",
     reference: "",
     body: "",
     status: "1",
   });
-  
+
   const addSnippet = async () => {
     if (newSnippet.reference && newSnippet.body && newSnippet.status) {
       try {
@@ -50,7 +45,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       }
     }
   };
-  
+
   const AssistantMessage = ({ text }) => {
     //console.log(text);
 
@@ -58,15 +53,15 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
     const [fullText, setFullText] = useState("");
     const [buttonTokens, setButtonTokens] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
       async function addVerseBodies() {
-        const bcv = new bcv_parser();
-        
+        const bcv = new bcvLib.bcv_parser();
+
         bcv.set_options({
           consecutive_combination_strategy: "separate",
           osis_compaction_strategy: "bcv",
-          sequence_combination_strategy: "separate"
-            });
+          sequence_combination_strategy: "separate",
+        });
 
         var withBodies = await Promise.all(
           refTokens.map(async (token) => {
@@ -74,104 +69,110 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
               var verseRefs = token;
               // Transform GPT verse ref into database compatible range of refs
               var parsedReference = bcv.parse(verseRefs).osis();
-       
-              var separateVerses = []
+
+              var separateVerses = [];
               var referenceRanges = parsedReference.split(",");
-              
-              referenceRanges.map((refRange)=>{
-                var rangeEnds = refRange.split("-")
+
+              referenceRanges.map((refRange) => {
+                var rangeEnds = refRange.split("-");
                 var startArr = rangeEnds[0].split(".");
-                var endArr = []
-                var endVerse = ""
-                if(rangeEnds.length>1){
+                var endArr = [];
+                var endVerse = "";
+                if (rangeEnds.length > 1) {
                   endArr = rangeEnds[1].split(".");
-                  endVerse = endArr[2]
-                }
-                else{
+                  endVerse = endArr[2];
+                } else {
                   endVerse = startArr[2];
                 }
-                for (let i = startArr[2]; i < Number(endVerse)+1; i++) {
-                  separateVerses.push(startArr[0]+"."+startArr[1]+"."+i)
+                for (let i = startArr[2]; i < Number(endVerse) + 1; i++) {
+                  separateVerses.push(
+                    startArr[0] + "." + startArr[1] + "." + i,
+                  );
                 }
               });
-              
-              var databaseVerses=[]
-              try{
+
+              var databaseVerses = [];
+              try {
                 databaseVerses = await getVersesByReference(separateVerses); // Get verses from database
-              }
-              catch{
-                databaseVerses=[{"body":"Verse reference not found."}]
+              } catch {
+                databaseVerses = [{ body: "Verse reference not found." }];
               }
 
-              var unifiedBody = ""
-              databaseVerses.forEach((databaseVerse)=>{
-                unifiedBody+= databaseVerse.body;
+              var unifiedBody = "";
+              databaseVerses.forEach((databaseVerse) => {
+                unifiedBody += databaseVerse.body;
               });
               return token + "  \n" + unifiedBody; // Modify token
             } else {
               return token;
             }
-          })
+          }),
         );
-        
+
         return withBodies.join(" ");
       }
-      
-      addVerseBodies().then(withBodies => {
+
+      addVerseBodies().then((withBodies) => {
         console.log("withBodies", withBodies);
         setFullText(withBodies);
       });
-    },[refTokens]);
+    }, [refTokens]);
 
-    useEffect(()=>{
-      setButtonTokens(fullText.split("<button/>"))
-    },[fullText]);
+    useEffect(() => {
+      setButtonTokens(fullText.split("<button/>"));
+    }, [fullText]);
 
-    const [hiddenButtons, setHiddenButtons] = useState(new Array(buttonTokens.length).fill(false));
+    const [hiddenButtons, setHiddenButtons] = useState(
+      new Array(buttonTokens.length).fill(false),
+    );
 
     const handleAddToMemory = async (tokens, index) => {
-      var verse = tokens[index-1];
-    
+      var verse = tokens[index - 1];
+
       verse = verse.replace(/\n/g, "");
       verse = verse.replace(/&nbsp;/g, "");
-    
+
       var verseArray = verse.split(/\*\*/);
-    
-      var length = verseArray.length
-    
-      newSnippet.body = verseArray[length-1].trim();
-      newSnippet.reference = verseArray[length-2].trim();
-      
+
+      var length = verseArray.length;
+
+      newSnippet.body = verseArray[length - 1].trim();
+      newSnippet.reference = verseArray[length - 2].trim();
+
       setIsDialogOpen(true);
-    
+
       setHiddenButtons((prevHiddenButtons) =>
-        prevHiddenButtons.map((isHidden, i) => (i === index ? true : isHidden))
+        prevHiddenButtons.map((isHidden, i) => (i === index ? true : isHidden)),
       );
     };
-  
+
     return (
       <div className="self-start bg-gray-200 dark:bg-gray-700 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2">
-        
         {buttonTokens.map((token, index) => {
           if (token.includes("BUTTON")) {
             // Handle JSX rendering
-              return <button key={index} onClick={() => handleAddToMemory(buttonTokens, index)} hidden={hiddenButtons[index]}
-              className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2" >
+            return (
+              <button
+                key={index}
+                onClick={() => handleAddToMemory(buttonTokens, index)}
+                hidden={hiddenButtons[index]}
+                className="self-start bg-gray-300 dark:bg-gray-600 dark:text-white rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2"
+              >
                 Add to Memory
-              </button>;
-          } else if (typeof token === 'string') {
+              </button>
+            );
+          } else if (typeof token === "string") {
             // Pass only valid strings to ReactMarkdown
-              return <Markdown key={index}>{token}</Markdown>;
+            return <Markdown key={index}>{token}</Markdown>;
           } else {
-              console.error(`Unexpected value for token: ${token}`);
-              return null; // Skip non-string tokens
+            console.error(`Unexpected value for token: ${token}`);
+            return null; // Skip non-string tokens
           }
         })}
-  
       </div>
     );
   };
-  
+
   const CodeMessage = ({ text }) => {
     return (
       <div className="self-start bg-gray-100 dark:bg-gray-800 dark:text-gray-200 rounded-2xl px-4 py-2 max-w-[80%] break-words mt-2 mb-2 font-mono">
@@ -184,7 +185,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       </div>
     );
   };
-  
+
   const TypingIndicator = () => {
     return (
       <div className="self-start bg-gray-200 dark:bg-gray-700 rounded-2xl px-4 max-w-[20%] py-2 mt-2 mb-2">
@@ -202,10 +203,10 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       </div>
     );
   };
-  
+
   const Message = ({ role, text, isTyping }) => {
     if (isTyping) return <TypingIndicator />;
-  
+
     switch (role) {
       case "user":
         return <UserMessage text={text} />;
@@ -217,31 +218,31 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
         return null;
     }
   };
-  
+
   const ChatInput = () => {
     const { userInput, setUserInput, handleSubmit, inputDisabled } =
       useChatContext();
     const textareaRef = useRef(null);
-  
+
     const handleInputChange = (e) => {
       setUserInput(e.target.value);
       adjustTextAreaHeight();
     };
-  
+
     const adjustTextAreaHeight = () => {
       if (textareaRef.current) {
         textareaRef.current.style.height = "auto";
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
       }
     };
-  
+
     const handleKeyDown = (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         handleSubmit(e);
       }
     };
-  
+
     return (
       <form onSubmit={handleSubmit} className="flex items-end w-full">
         <Textarea
@@ -264,15 +265,15 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       </form>
     );
   };
-  
+
   const ChatMessages = () => {
     const { messages, isTyping } = useChatContext();
     const messagesEndRef = useRef(null);
-  
+
     useEffect(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages, isTyping]);
-  
+
     return (
       <div className="flex flex-col h-full overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
@@ -295,7 +296,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
   };
 
   const handleAddOrUpdateSnippet = async () => {
-      await addSnippet();
+    await addSnippet();
   };
 
   const openai = useOpenAI();
@@ -331,13 +332,14 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
         </div>
         <div>
           <MemoryVerseDialog
-          isDialogOpen={isDialogOpen}
-          setIsDialogOpen={setIsDialogOpen}
-          newSnippet={newSnippet}
-          editingIndex={null}
-          handleInputChange={handleInputChange}
-          handleStatusChange={handleStatusChange}
-          handleAddOrUpdateSnippet={handleAddOrUpdateSnippet}/>
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            newSnippet={newSnippet}
+            editingIndex={null}
+            handleInputChange={handleInputChange}
+            handleStatusChange={handleStatusChange}
+            handleAddOrUpdateSnippet={handleAddOrUpdateSnippet}
+          />
         </div>
       </ChatProvider>
     );

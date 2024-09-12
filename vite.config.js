@@ -4,6 +4,9 @@ import { defineConfig } from "vite";
 import fixReactVirtualized from "esbuild-plugin-react-virtualized";
 
 export default defineConfig({
+  build: {
+    sourcemap: true,
+  },
   plugins: [react()],
   resolve: {
     alias: {

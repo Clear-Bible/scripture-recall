@@ -62,7 +62,7 @@ export const ChatProvider = ({
 
           // Send a hidden "Hello" message and get the assistant's response
           const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o-2024-08-06",
             messages: [
               { role: "system", content: initialPrompt },
               { role: "user", content: "Hello" },
@@ -126,7 +126,7 @@ export const ChatProvider = ({
 
   const sendPracticeMessage = async () => {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o-2024-08-06",
       messages: [
         { role: "system", content: systemPrompt },
         ...messages,

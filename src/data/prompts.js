@@ -67,8 +67,9 @@ export function createTextPracticePrompt(snippet) {
       break;
     case statuses[1]:
       conversationStarterInstructions = 
-        `Begin by asking the user to type back the verse as you have written it out.  
-        In the case of the user not knowing the verse at all, it's ok to show the user the entire verse.`;
+        `In the case of the user not knowing the verse at all, it's ok to show the user the entire verse.
+        So, begin by writing out the whole verse to the user and ask the user to type back the verse as you have written it out.  
+        `;
       break;
   }
     

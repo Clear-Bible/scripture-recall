@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from "react";
 import { Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { ChatProvider, useChatContext } from "@/lib/ChatContext";
@@ -224,6 +230,17 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
       useChatContext();
     const textareaRef = useRef(null);
 
+    useEffect(() => {
+      if (!inputDisabled && textareaRef.current) {
+        const focusInput = () => {
+          textareaRef.current.focus();
+        };
+        // Delay focus to ensure it doesn't interfere with scrolling
+        const timeoutId = setTimeout(focusInput, 200);
+        return () => clearTimeout(timeoutId);
+      }
+    }, [inputDisabled]);
+
     const handleInputChange = (e) => {
       setUserInput(e.target.value);
       adjustTextAreaHeight();
@@ -270,9 +287,14 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
     const { messages, isTyping } = useChatContext();
     const messagesEndRef = useRef(null);
 
-    useEffect(() => {
+    const scrollToBottom = useCallback(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages, isTyping]);
+    }, []);
+
+    useEffect(() => {
+      const timeoutId = setTimeout(scrollToBottom, 100);
+      return () => clearTimeout(timeoutId);
+    }, [messages, isTyping, scrollToBottom]);
 
     return (
       <div className="flex flex-col h-full overflow-y-auto p-4 space-y-4">

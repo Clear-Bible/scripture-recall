@@ -15,9 +15,7 @@ import { saveSnippet } from "@/db/snippets";
 import MemoryVerseDialog from "../memory/MemoryVerseDialog";
 import { getVersesByReference } from "@/db/bible";
 
-// import * as bcvLib from "bible-passage-reference-parser/js/en_bcv_parser";
-import * as parserModule from "bible-ref-parse/js/en_bcv_parser";
-const parser = new parserModule.bcv_parser();
+import "bible-passage-reference-parser/js/en_bcv_parser";
 
 const Chat = ({ mode, snippet, initialPrompt }) => {
   const UserMessage = ({ text }) => {
@@ -57,7 +55,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
 
     useEffect(() => {
       async function addVerseBodies() {
-        const bcv = parser;
+        const bcv = new window.bcv_parser();
 
         bcv.set_options({
           consecutive_combination_strategy: "separate",

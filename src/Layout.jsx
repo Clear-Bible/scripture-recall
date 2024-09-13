@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, Brain, Book, Settings } from "lucide-react";
+import { Home, Brain, Book, Settings, Binoculars } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ const NavLink = ({ to, children, isVertical }) => {
 const NavBar = ({ isVertical }) => {
   const tabs = [
     { id: "home", icon: Home, label: "Home", path: "/home" },
-    { id: "memory", icon: Book, label: "Memory", path: "/memory" },
+    { id: "discover", icon: Binoculars, label: "Discover", path: "/discover" },
     { id: "practice", icon: Brain, label: "Practice", path: "/practice" },
     { id: "settings", icon: Settings, label: "Settings", path: "/settings" },
   ];

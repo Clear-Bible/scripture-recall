@@ -11,7 +11,6 @@ import {
 
 import Layout from "@/Layout";
 import Home from "@/routes/Home";
-import Memory from "@/routes/Memory";
 import Practice from "@/routes/Practice";
 import Discover from "@/routes/Discover";
 import Settings from "@/routes/Settings";
@@ -31,10 +30,6 @@ const router = createBrowserRouter([
       {
         path: "home",
         element: <Home />,
-      },
-      {
-        path: "memory",
-        element: <Memory />,
       },
       {
         path: "practice",

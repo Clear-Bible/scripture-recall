@@ -347,7 +347,7 @@ const Chat = ({ mode, snippet, initialPrompt }) => {
           </div>
           <div className="flex-shrink-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-4 md:rounded-lg lg:rounded-lg">
             <ChatInput />
-            <p className="text-xs px-1 mt-2 text-gray-400">
+            <p className="text-xs px-1 mt-2 text-gray-400 hidden sm:block">
               Enter to submit. Shift + Enter for new line.
             </p>
           </div>

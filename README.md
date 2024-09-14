@@ -1,7 +1,7 @@
 # ScriptureRecall is live today!  https://recall.bible
 
 ## Discover Memory Verses
-Converse with AI to find memory verses related to your interests.  AI recommendations are based on a curated dataset of topics and associated scripture.
+- Converse with AI to find memory verses related to your interests.  AI recommendations are based on a curated dataset of topics and associated scripture.
 <img src="public/Screen Shot 2024-09-14 at 3.54.55 PM.png" alt="drawing" width="500"/>
 
 - The text of scripture itself is not AI generated

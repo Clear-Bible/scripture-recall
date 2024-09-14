@@ -1,26 +1,29 @@
-# https://recall.bible <--USE HERE
+# ScriptureRecall is live today!  https://recall.bible
 
-- our data
-- how to use
-- Screen shots
+## Discover Memory Verses
+    - Converse with AI to find memory verses
+    - AI recommendations are based on a curated topic dataset
+    - The text of scripture itself is not AI generated
+    - Add a verse you want to memorize
 
-- Discover
-    - Complex topic request
-    - Recommendations based on topic data
-    - Adding Verse From Discover
-    - The text you see is not AI generated
+    ![alt text](<public/Screen Shot 2024-09-14 at 3.54.55 PM.png>)
 
-
-
-- Practice
+## Practice Memory Verses
     - Text Practice
         - Various kinds of practice exercises
     - Audio Practice
+        - Include audio clip
 
-- Home Screen
+## Track Memory Verses
     - Adding a verse from Home Screen
     - Editing a Verse
     - Previewing a verse
+
+- our data
+- how to use
+- Screenshots
+
+
     
 
 # Syntereo

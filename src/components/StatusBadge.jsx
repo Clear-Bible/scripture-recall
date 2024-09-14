@@ -13,7 +13,7 @@ const statusOptions = [
   { value: "3", label: "Know it!", color: "bg-green-500" },
 ];
 
-function StatusBadge({ snippet, onStatusChange }) {
+function StatusBadge({ snippet, onStatusChange, mode = "standard" }) {
   const [status, setStatus] = useState(snippet.status || "1");
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -37,6 +37,12 @@ function StatusBadge({ snippet, onStatusChange }) {
       setOpen(false);
     }
   };
+
+  if (mode === "read-only") {
+    return (
+      <div className={`${currentStatus.color} w-4 h-4 rounded-full`}></div>
+    );
+  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

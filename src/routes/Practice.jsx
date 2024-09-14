@@ -62,9 +62,11 @@ const Practice = () => {
         <Select onValueChange={handleSnippetChange}>
           <SelectTrigger className="w-full">
             {selectedSnippet ? (
-              <div className="flex w-full justify-between items-center">
+              <div className="flex w-full items-center">
+                <div className="mr-4">
+                  <StatusBadge snippet={selectedSnippet} mode="read-only" />
+                </div>
                 <span>{selectedSnippet.reference}</span>
-                <StatusBadge snippet={selectedSnippet} />
               </div>
             ) : (
               <SelectValue placeholder="Select a snippet for practice" />
@@ -77,8 +79,11 @@ const Practice = () => {
                 value={snippet.id.toString()}
                 className="w-full"
               >
-                <div className="flex w-full justify-between items-center">
-                  <span>{snippet.reference}</span>
+                <div className="flex items-center w-full">
+                  <div className="mr-4 ml-0">
+                    <StatusBadge snippet={snippet} mode="read-only" />
+                  </div>
+                  <div>{snippet.reference}</div>
                   {/* <StatusBadge status={snippet.status} /> */}
                 </div>
               </SelectItem>

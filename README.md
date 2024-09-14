@@ -2,7 +2,7 @@
 
 ## Discover Memory Verses
 - Converse with AI to find memory verses related to your interests.  All AI recommendations are based on a curated dataset of topics and associated scripture.  To ensure that scripture is not misquoted, the text of each recommended verse is programmatically inserted rather than AI generated.
-<img src="public/Screen Shot 2024-09-14 at 3.54.55 PM.png" alt="drawing" width="500" style="border: 5px solid white; border-radius: 10px;"/>
+<kbd><img src="public/Screen Shot 2024-09-14 at 3.54.55 PM.png" alt="drawing" width="500" style="border: 5px solid white; border-radius: 10px;"/></kbd>
 
 
 &nbsp;  

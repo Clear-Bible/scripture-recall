@@ -222,7 +222,7 @@ const ScriptureSnippetManager = () => {
           stroke={"currentColor"}
           className="mr-2 items-center"
         />
-        <div className="font-bold text-xl mb-6">ScriptureRecall</div>
+        <div className="font-bold text-xl">ScriptureRecall</div>
       </div>
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
@@ -230,12 +230,6 @@ const ScriptureSnippetManager = () => {
         <EmptyState />
       ) : (
         <>
-          <Card className="mb-4">
-            <CardHeader>
-              <CardTitle className="text-sm">Your Progress</CardTitle>
-              <CardDescription>You're doing great!</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-1 pb-0">
               <ChartContainer
                 config={chartConfig}
                 className="mx-auto aspect-square max-h-[250px]"
@@ -284,8 +278,7 @@ const ScriptureSnippetManager = () => {
                   </Pie>
                 </PieChart>
               </ChartContainer>
-            </CardContent>
-          </Card>
+          
 
           <div className="space-y-4 mb-20">
             {snippets.map((snippet) => (

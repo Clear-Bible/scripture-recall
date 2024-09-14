@@ -1,13 +1,17 @@
 # ScriptureRecall is live today!  https://recall.bible
 
 ## Discover Memory Verses
-- Converse with AI to find memory verses related to your interests.  All AI recommendations are based on a curated dataset of topics and associated scripture.  To ensure that scripture is not misquoted, the text of each recommended verse is programmatically inserted rather than AI generated.
-<kbd><img src="public/Screen Shot 2024-09-14 at 3.54.55 PM.png" alt="drawing" width="500" style="border-radius: 10px;"/></kbd>
+Converse with AI to find memory verses related to your interests.  All AI recommendations are based on a curated dataset of topics and associated scripture.  
+
+To ensure that scripture is not misquoted, the text of each recommended verse is programmatically inserted rather than AI generated.
+
+<kbd><img src="2024-09-14 16.48.15.gif" alt="drawing" width="250" style="border-radius: 10px;"/></kbd> <kbd><img src="Screen Shot 2024-09-14 at 4.56.15 PM.png" alt="drawing" width="250" style="border-radius: 10px;"/></kbd>
 
 &nbsp;  
 
-- Add recommended verses to your memory bank so that you can practice them!
-<kbd><img src="public/Screen Shot 2024-09-14 at 4.20.49 PM.png" alt="drawing" width="500" style="border-radius: 10px;"/></kbd>
+Add recommended verses to your memory bank so that you can practice them!
+
+<kbd><img src="Screen Shot 2024-09-14 at 4.56.15 PM.png" alt="drawing" width="250" style="border-radius: 10px;"/></kbd>
 
 &nbsp;  
 

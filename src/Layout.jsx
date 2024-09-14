@@ -1,6 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, Brain, Book, Settings, Binoculars } from "lucide-react";
+import {
+  Home,
+  Brain,
+  Book,
+  Settings,
+  Binoculars,
+  MessagesSquare,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
@@ -78,6 +86,8 @@ const NavBar = ({ isVertical }) => {
 };
 
 const Layout = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -85,13 +95,40 @@ const Layout = () => {
         console.log("Database initialized successfully");
         await initializeBibleDatabase();
         console.log("Bible Database initialized successfully");
+        setTimeout(() => setIsLoading(false), 400);
       } catch (error) {
         console.error("Failed to initialize database:", error);
+        setTimeout(() => setIsLoading(false), 400);
       }
     };
 
     init();
   }, []);
+
+  if (isLoading) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          transition={{ duration: 1.5 }}
+          className="h-screen w-screen z-50 bg-black text-white flex flex-col justify-center items-center"
+        >
+          <div>
+            <div className="flex justify-center items-center">
+              <MessagesSquare
+                strokeWidth={2}
+                stroke={"currentColor"}
+                className="mr-2 items-center"
+              />
+              <div className="font-bold text-xl">ScriptureRecall</div>
+            </div>
+          </div>
+          <div className="text-lg mt-2 italic self-center">just a moment</div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">

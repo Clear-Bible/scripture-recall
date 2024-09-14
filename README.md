@@ -1,4 +1,27 @@
-# https://recall.bible
+# https://recall.bible <--USE HERE
+
+- our data
+- how to use
+- Screen shots
+
+- Discover
+    - Complex topic request
+    - Recommendations based on topic data
+    - Adding Verse From Discover
+    - The text you see is not AI generated
+
+
+
+- Practice
+    - Text Practice
+        - Various kinds of practice exercises
+    - Audio Practice
+
+- Home Screen
+    - Adding a verse from Home Screen
+    - Editing a Verse
+    - Previewing a verse
+    
 
 # Syntereo
 

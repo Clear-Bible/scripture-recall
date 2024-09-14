@@ -16,6 +16,12 @@ Add recommended verses to your memory bank so that you can practice them.
 &nbsp;  
 
 ## Practice Memory Verses
+Learn and maintain memory verses by practicing with an AI.  Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  
+
+For example, specifying that you "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks.
+
+<kbd><img src="024-09-14 17.44.48.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+
     - Text Practice
         - Various kinds of practice exercises
     - Audio Practice

@@ -43,6 +43,16 @@ import {
 import Loader from "@/components/Loader";
 import StatusBadge from "@/components/StatusBadge";
 import MemoryVerseDialog from "@/components/memory/MemoryVerseDialog";
+import { TrendingUp } from "lucide-react"
+import { Label, Pie, PieChart } from "recharts"
+import {  
+  CardFooter,
+} from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 
 const ScriptureSnippetManager = () => {
   const [error, setError] = useState(null);
@@ -170,6 +180,40 @@ const ScriptureSnippetManager = () => {
     return <Loader />;
   }
 
+  const chartData = [
+    { status: "Know it!", 
+      passages: snippets.filter((snippet) => snippet.status == "3").length, 
+      fill: "var(--color-green)" },
+
+    { status: "Kinda know it", 
+      passages: snippets.filter((snippet) => snippet.status == "2").length, 
+      fill: "var(--color-yellow"}, 
+
+    { status: "Don't Know it",
+      passages: snippets.filter((snippet) => snippet.status == "1").length, 
+      fill: "var(--color-red)" },
+  ]
+  
+  const chartConfig = {
+    passages: {
+      label: "Passages",
+    },
+    green: {
+      label: "Passages you know well",
+      color: "rgb(34, 197, 94)",
+    },
+    yellow: {
+      label: "Passages you kind of know",
+      color: "rgb(234, 179, 8)",
+    },
+    red: {
+      label: "Passages you don't know yet",
+      color: "rgb(239, 68, 68)",
+    }
+  }
+
+  const totalPassages = snippets.length;
+
   return (
     <div className="w-full px-4 mt-6">
       <div className="flex w-full justify-center">
@@ -191,13 +235,55 @@ const ScriptureSnippetManager = () => {
               <CardTitle className="text-sm">Your Progress</CardTitle>
               <CardDescription>You're doing great!</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="mb-4 text-xs">Passages you know well</p>
-              <Progress value={40} className="" />
-              <p className="my-4 text-xs">Passages you kind of know</p>
-              <Progress value={70} className="" />
-              <p className="my-4 text-xs">Passages you don't know yet</p>
-              <Progress value={20} className="" />
+            <CardContent className="flex-1 pb-0">
+              <ChartContainer
+                config={chartConfig}
+                className="mx-auto aspect-square max-h-[250px]"
+              >
+                <PieChart>
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Pie
+                    data={chartData}
+                    dataKey="passages"
+                    nameKey="status"
+                    innerRadius={60}
+                    strokeWidth={5}
+                  >
+                    <Label
+                      content={({ viewBox }) => {
+                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          return (
+                            <text
+                              x={viewBox.cx}
+                              y={viewBox.cy}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                            >
+                              <tspan
+                                x={viewBox.cx}
+                                y={viewBox.cy}
+                                className="fill-foreground text-3xl font-bold"
+                              >
+                                {totalPassages.toLocaleString()}
+                              </tspan>
+                              <tspan
+                                x={viewBox.cx}
+                                y={(viewBox.cy || 0) + 24}
+                                className="fill-muted-foreground"
+                              >
+                                Passages
+                              </tspan>
+                            </text>
+                          )
+                        }
+                      }}
+                    />
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
             </CardContent>
           </Card>
 

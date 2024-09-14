@@ -20,7 +20,7 @@ Learn and maintain memory verses by practicing with an AI.  Depending on how wel
 
 For example, specifying that you "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks.
 
-<kbd><img src="024-09-14 17.44.48.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+<kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
 
     - Text Practice
         - Various kinds of practice exercises

@@ -1,45 +1,51 @@
 # ScriptureRecall is live today @ [recall.bible](https://recall.bible)
-*[Try it yourself here](https://recall.bible)*
+
+_[Try it yourself here](https://recall.bible)_
 
 ## Discover Memory Verses
-Converse with AI to find memory verses related to your interests.  All AI recommendations are based on a curated dataset of topics and associated scripture.  
+
+Converse with AI to find memory verses related to your interests. All AI recommendations are based on a curated dataset of topics and associated scripture.
 
 To ensure that scripture is not misquoted, the text of each recommended verse is programmatically inserted rather than AI generated.
 
-<kbd><img src="2024-09-14 16.48.15.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd> <kbd><img src="Screen Shot 2024-09-14 at 4.56.15 PM.png" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+<kbd><img src="doc/2024-09-14 16.48.15.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd> <kbd><img src="doc/Screen Shot 2024-09-14 at 4.56.15 PM.png" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
 
-&nbsp;  
+&nbsp;
 
 Add recommended verses to your memory bank so that you can practice them.
 
-<kbd><img src="2024-09-14 17.11.36.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+<kbd><img src="doc/2024-09-14 17.11.36.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
 
-&nbsp;  
+&nbsp;
 
 ## Practice Memory Verses
-Learn and maintain memory verses by practicing with an AI.  Both text and audio chat are supported!  With AI, when you fail to remember a verse it can give you hints (rather than just looking at the verse).
 
-Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I know it!" then the LLM will ask you to recite it from memory.
+Learn and maintain memory verses by practicing with an AI. Both text and audio chat are supported! With AI, when you fail to remember a verse it can give you hints (rather than just looking at the verse).
+
+Depending on how well you know a verse, the AI will use different memorization techniques to build your memory. For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I know it!" then the LLM will ask you to recite it from memory.
 
 <table>
   <tr>
     <td>
 
 ### Text Practice
-<kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+
+<kbd><img src="doc/2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
 
 </td>
 <td>
 
 ### Audio Practice
-<kbd><img src="2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+
+<kbd><img src="doc/2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
 
 </td>
   </tr>
 </table>
 
 ## Track Memory Verses
-Add verses you want to memorize.  
+
+Add verses you want to memorize.
 
 Track your learning progress as verses go from "I don't know it" to "I kind of know it" to "I know it!"
 

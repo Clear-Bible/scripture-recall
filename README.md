@@ -18,27 +18,35 @@ Add recommended verses to your memory bank so that you can practice them.
 ## Practice Memory Verses
 Learn and maintain memory verses by practicing with an AI.  Both text and audio chat are supported!  
 
-Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I Know it!" then the LLM will ask you to recite it from memory.
+Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I know it!" then the LLM will ask you to recite it from memory.
 
-<div style="display: flex; align-items: center; justify-content: space-around;">
-    <div>
-        <h3>Text Practice</h3>
-        <kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
-    </div>
-    <div>
-        <h3>Audio Practice</h3>
-        <kbd><img src="2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
-    </div>
-</div>
+<table>
+  <tr>
+    <td>
+
+### Text Practice
+<kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+
+</td>
+<td>
+
+### Audio Practice
+<kbd><img src="2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+
+</td>
+  </tr>
+</table>
 
 ## Track Memory Verses
     - Adding a verse from Home Screen
     - Editing a Verse
     - Previewing a verse
 
-- our data
-- how to use
-- Screenshots
+# Data Created for this Project
+
+[Bible Topics](https://github.com/Clear-Bible/BibleTopics)
+
+[Kathario `OSIS-reconstitution` branch](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution)
 
 # Syntereo
 
@@ -71,9 +79,3 @@ To test the iOS deployment:
 
 - Install the macOS [preprequisites](https://capacitorjs.com/docs/getting-started/environment-setup) for working with capacitor.
 - Locally run `npm run dev-ios`.
-
-# Data Created for this Project
-
-[Bible Topics](https://github.com/Clear-Bible/BibleTopics)
-
-[Kathario `OSIS-reconstitution` branch](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution)

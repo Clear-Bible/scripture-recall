@@ -16,7 +16,7 @@ Add recommended verses to your memory bank so that you can practice them.
 &nbsp;  
 
 ## Practice Memory Verses
-Learn and maintain memory verses by practicing with an AI.  Both text and audio chat are supported!  
+Learn and maintain memory verses by practicing with an AI.  Both text and audio chat are supported!  With AI, when you fail to remember a verse it can give you hints (rather than just looking at the verse).
 
 Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I know it!" then the LLM will ask you to recite it from memory.
 
@@ -38,13 +38,15 @@ Depending on how well you know a verse, the AI will use different memorization t
 </table>
 
 ## Track Memory Verses
-    - Adding a verse from Home Screen
-    - Editing a Verse
-    - Previewing a verse
+Add verses you want to memorize.  
+
+Track your learning progress as verses go from "I don't know it" to "I kind of know it" to "I know it!"
+
+The content of a verse is hidden by default so that you aren't spoiled when trying to test your memory.
 
 # Data Created for this Project
 
-[Bible Topics](https://github.com/Clear-Bible/BibleTopics)
+[Bible Topics](https://github.com/Clear-Bible/BibleTopics) is used as the knowledge base for the Discover Chat's RAG system.
 
 [Kathario `OSIS-reconstitution` branch](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution)
 

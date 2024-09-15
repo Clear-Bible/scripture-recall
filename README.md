@@ -20,11 +20,16 @@ Learn and maintain memory verses by practicing with an AI.  Both text and audio 
 
 Depending on how well you know a verse, the AI will use different memorization techniques to build your memory.  For example, specifying that you only "kind of know" a verse will prompt the AI to start by using fill-in-the-blanks while is a verse is marked as "I Know it!" then the LLM will ask you to recite it from memory.
 
-### Text Practice
-<kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
-
-### Audio Practice
-<kbd><img src="2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+<div style="display: flex; align-items: center; justify-content: space-around;">
+    <div>
+        <h3>Text Practice</h3>
+        <kbd><img src="2024-09-14 17.49.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+    </div>
+    <div>
+        <h3>Audio Practice</h3>
+        <kbd><img src="2024-09-14 21.16.30.gif" alt="drawing" width="350" style="border-radius: 10px;"/></kbd>
+    </div>
+</div>
 
 ## Track Memory Verses
     - Adding a verse from Home Screen

@@ -1,4 +1,5 @@
-# ScriptureRecall is live today!  https://recall.bible
+# ScriptureRecall is live today @ [recall.bible](https://recall.bible)
+*[Try it yourself here](https://recall.bible)*
 
 ## Discover Memory Verses
 Converse with AI to find memory verses related to your interests.  All AI recommendations are based on a curated dataset of topics and associated scripture.  
@@ -46,13 +47,21 @@ The content of a verse is hidden by default so that you aren't spoiled when tryi
 
 # Data Created for this Project
 
-[Bible Topics](https://github.com/Clear-Bible/BibleTopics) is used as the knowledge base for the Discover Chat's RAG system.
+- [Bible Topics](https://github.com/Clear-Bible/BibleTopics) is used as the knowledge base for the Discover Chat's RAG system.
+- [Kathario (`OSIS-reconstitution` branch)](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution) for processing the Biblical text (BSB) used by the Discover chat.
 
-[Kathario `OSIS-reconstitution` branch](https://github.com/Clear-Bible/kathairo.py/tree/OSIS-reconstitution)
+# Tech Stack
 
-# Syntereo
+- Vite + React
+- Shadcn + TailwindCSS
+- IndexedDB
+- Text models: OpenAI
+- Voice model: Hume.AI
+- Capacitor for deployment on iOS
 
-_"And Mary treasured these words in her heart..."_
+All code and data was developed within the 30-day window of the hackathon.
+
+# Developer Info
 
 ## Run Locally
 
